@@ -1,11 +1,7 @@
-from django.shortcuts import render
+from rest_framework.generics import ListAPIView
 from .models import VideoRelation, Video, Tag, EndTag
 from .serializers import *
 
 class VideoRelationAPIView(ListAPIView):
-    queryset = VideoRelation.objects.filter()
+    queryset = VideoRelation.objects.all()
     serializer_class = VideoRelationSerializer
-
-    def get_queryset(self):
-        relationId = VideoRelation.objects.get(pk=self.kwargs['pk']).pk
-        return self.queryset.filter(id=relationId)

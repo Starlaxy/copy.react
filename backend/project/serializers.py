@@ -22,3 +22,11 @@ class ProjectSerializer(serializers.ModelSerializer):
         except:
             videorelation_abstruct_contents = None
             return videorelation_abstruct_contents
+
+class ProjectCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = [
+            'title',
+            'description',
+        ]

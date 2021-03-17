@@ -4,5 +4,5 @@ from . import views
 app_name ='video'
 
 urlpatterns =[
-    path('get_videorelation/<int:pk>/', views.VideoRelationAPIView.as_view(), name='get_videorelation'),
+    path('video/get_all/', views.VideoRelationAPIView.as_view(), name='video_get_all'),
 ]

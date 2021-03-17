@@ -1,0 +1,41 @@
+/* ProjectList */
+#contents {
+    width: 80%;
+    margin: 0 auto;
+}
+
+h2 {
+    font-weight: bold;
+    font-size: 150%;
+    padding: 20px 0;
+}
+
+/* ProjectContent */
+img {
+    height: 19px;
+    width: 19px;
+    margin-left: 10px;
+}
+
+.caption {
+    display: flex;
+}
+
+.project {
+    display: block;
+    text-decoration: none;
+    border-top: 1px solid #b8b8b8;
+    padding: 10px 0;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.title, .description {
+    padding: 5px;
+}
+
+.delete-icon {
+    margin: 0 0 0 auto;
+}

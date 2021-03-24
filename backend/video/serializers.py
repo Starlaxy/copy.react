@@ -9,6 +9,7 @@ class VideoRelationSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title',
+            'project',
             'videos',
         ]
 
@@ -19,6 +20,23 @@ class VideoRelationSerializer(serializers.ModelSerializer):
         except:
             video_abstruct_contents = None
             return video_abstruct_contents
+
+class VideoCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = [
+            'video_relation',
+            'video',
+            'three_dimensional_flg',
+        ]
+
+class VideoRelationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VideoRelation
+        fields = [
+            "title",
+            "project",
+        ]
 
 class VideoSerializer(serializers.ModelSerializer):
     tags = SerializerMethodField()

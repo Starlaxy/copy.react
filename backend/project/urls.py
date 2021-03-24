@@ -1,9 +1,13 @@
 from django.urls import path
+from django.conf.urls import url, include
+from rest_framework import routers
 from . import views
 
 app_name ='project'
 
+router = routers.DefaultRouter()
+router.register('project', views.ProjectViewSet, basename='project')
+
 urlpatterns =[
-    path('project/get_all/', views.ProjectListAPIView.as_view(), name='project_get_all'),
-    path('project/create/', views.ProjectCreateAPIView.as_view(), name='project_create'),
+    path('', include(router.urls))
 ]

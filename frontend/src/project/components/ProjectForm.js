@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { createProject } from '../api/project'
 
-export const ProjectForm = () => {
+export const ProjectForm = (props) => {
 
     const initialState = {
         title: '',
@@ -10,23 +10,28 @@ export const ProjectForm = () => {
     
     const [project, setProject] = useState(initialState);
 
-    const handleChange = (event) => {
-        const value = event.target.value;
+    const handleChange = (e) => {
+        const value = e.target.value;
         setProject({
             ...project,
-            [event.target.name]: value
+            [e.target.name]: value
         });
     }
 
-    const handleSubmit = (event) => {
-        // ディクショナリー変換
+    const handleSubmit = (e) => {
+        e.preventDefault();
         createProject(project)
         .then(p => {
-            setProject(p);
+            props.setProject(p);
+            setProject(initialState);
         })
         .catch(e => {
             throw new Error(e);
         });
+    }
+
+    const handleEdit = (e) => {
+        
     }
 
     return(

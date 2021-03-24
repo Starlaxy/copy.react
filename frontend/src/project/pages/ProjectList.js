@@ -34,11 +34,11 @@ export const ProjectList = () => {
                     <p>loading...</p>
                 </div>
                 :
-                <div key='project' id="contents">
+                <div key='project' id='contents'>
                     <div>
                         <h2>プロジェクト一覧</h2>
-                        {project.map( p => <ProjectContent {...p}  /> )}
-                        <ProjectForm />
+                        {project.map( p => <ProjectContent {...p} setProject={ setProject }  key={p.id} /> )}
+                        <ProjectForm setProject={ setProject } />
                     </div>
                 </div>
             }

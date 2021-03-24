@@ -10,7 +10,7 @@ import json
 
 def get_upload_to(instance, filename):
     root, ext = os.path.splitext(filename)
-    return 'static/videos/{0}/{1}/{2}{3}'.format(instance.video_relation.project.pk, instance.video_relation.pk, instance.pk, ext)
+    return '{0}/{1}/{2}{3}'.format(instance.video_relation.project.pk, instance.video_relation.pk, instance.pk, ext)
 
 class VideoRelation(models.Model):
     title = models.CharField(max_length=100)

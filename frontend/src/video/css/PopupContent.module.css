@@ -1,0 +1,89 @@
+/* POPUPタグ */
+.popupArea {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background-color: #002C50;
+    color: white;
+}
+.closeIcon {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 15px;
+    right: 15px;
+}
+
+/* POPUPTYPE DEFAULT */
+.default {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    padding: 5%;
+    justify-content: space-around;
+}
+.defaultImgContent {
+    width: 50%;
+    height: 100%;
+    text-align: center;
+}
+.defaultImgContent > img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.defaultTextContent {
+    width: 50%;
+    height: 100%;
+    position: relative;
+}
+.defaultTextContent > p {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* POPUPTYPE VERTICAL */
+.vertical {
+    width: 100%;
+    height: 100%;
+    padding: 5%;
+}
+.verticalImgContent {
+    width: 100%;
+    height: 50%;
+    text-align: center;
+}
+.verticalImgContent > img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.verticalTextContent {
+    width: 100%;
+    height: 50%;
+    text-align: center;
+}
+.verticalTextContent > p {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* POPUPTYPE TEXT */
+.text {
+    padding: 5%;
+}
+
+/* POPUPボタン */
+.btnArea {
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.btn {
+    padding: 10px 20px;
+    background-color: #F8B500;
+    border-radius: 20px;
+    border: 1px solid white;
+}

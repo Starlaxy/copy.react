@@ -4,6 +4,8 @@ import { getVideoRelation } from '../api/video'
 import { VideoRelationContent } from '../components/VideoRelationContent';
 import { VideoRelationForm } from '../components/VideoRelationForm';
 
+import classes from  '../css/VideoRelationList.module.css'
+
 export const VideoRelationList = () => {
     const initialState = {
         id: '',
@@ -35,13 +37,14 @@ export const VideoRelationList = () => {
                 :
                 <div key='videoRelation' id="contents">
                     <div>
-                        <h2>ビデオ一覧</h2>
-                        {videoRelation.map( vr => <VideoRelationContent key={ vr.id } {...vr}  /> )}
-                        <VideoRelationForm projectId={ projectId } />
+                        <h2 className={classes.title}>ビデオ一覧</h2>
+                        <div className={classes.contentWrap}>
+                            {videoRelation.map( vr => <VideoRelationContent key={ vr.id } {...vr} videoRelation={videoRelation} setVideoRelation={ setVideoRelation } /> )}
+                        </div>
+                        <VideoRelationForm projectId={ projectId } setVideoRelation={ setVideoRelation } videoRelation={videoRelation} />
                     </div>
                 </div>
             }
         </>
     )
-
 }

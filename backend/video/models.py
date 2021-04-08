@@ -26,7 +26,7 @@ class Video(models.Model):
     video_relation = models.ForeignKey(VideoRelation, on_delete=models.CASCADE)
     video = models.FileField(upload_to=get_upload_to, null=True)
     three_dimensional_flg = models.BooleanField(default=False)
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = 'Video'
@@ -47,7 +47,8 @@ def save_file(sender, instance, created, **kwargs):
         instance.__dict__.pop(_UNSAVED_FILEFIELD)
 
 def get_popup_upload_to(instance, filename):
-    return os.path.join('static/videos/' + str(Tag.video_relation) + '/popupImg', filename)
+    root, ext = os.path.splitext(filename)
+    return '{0}/{1}/{2}/{3}'.format(instance.video.video_relation.project.pk, instance.video.video_relation.pk, 'popupImg', filename)
 
 class Tag(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
@@ -61,24 +62,16 @@ class Tag(models.Model):
     popup_text = models.CharField(max_length=100, default='', blank=True, null=True)
     popup_btn_text = models.CharField(max_length=100, default='', blank=True, null=True)
     popup_btn_url = models.URLField(max_length=100, default='', blank=True, null=True)
-    x_coordinate = models.DecimalField(blank=False, null=False, decimal_places=2, max_digits=8, default=0)
-    y_coordinate = models.DecimalField(blank=False, null=False, decimal_places=2, max_digits=8, default=0)
+    left = models.DecimalField(blank=False, null=False, decimal_places=2, max_digits=8, default=0)
+    top = models.DecimalField(blank=False, null=False, decimal_places=2, max_digits=8, default=0)
     width = models.DecimalField(blank=False, null=False, decimal_places=2, max_digits=5)
     height = models.DecimalField(blank=False, null=False, decimal_places=2, max_digits=5)
     display_frame = models.IntegerField(blank=False, null=False)
     hide_frame = models.IntegerField(blank=False, null=False)
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def filename(self):
         return os.path.basename(self.file.name)
-
-    def get_relation_name(self):
-        return self.__video_relation
-
-    def set_relation_name(self, value):
-        self.__video_relation = value
-
-    video_relation = property(get_relation_name, set_relation_name)
 
     def __str__(self):
         return self.title

@@ -1,17 +1,5 @@
-/* ProjectList */
-#contents {
-    width: 80%;
-    margin: 0 auto;
-}
-
-h2 {
-    font-weight: bold;
-    font-size: 150%;
-    padding: 20px 0;
-}
-
 /* ProjectContent */
-img {
+.img {
     height: 19px;
     width: 19px;
     margin-left: 10px;
@@ -36,6 +24,6 @@ img {
     padding: 5px;
 }
 
-.delete-icon {
+.deleteIcon {
     margin: 0 0 0 auto;
 }

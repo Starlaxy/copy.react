@@ -31,10 +31,34 @@ export const createProject = async (data) =>{
     return await toJson(res);
 }
 
+// タイトル変更
+export const updateTitle = async (id, data) =>{
+    const res = await fetch(API_PROJECT_ROOT + id + config.API_PROJECT_ACTION.UPDATE_TITLE, {
+        headers:{
+            'Content-type':'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify(data),
+    })
+    return await toJson(res);
+}
+
+// 詳細変更
+export const updateDescription = async (id, data) =>{
+    const res = await fetch(API_PROJECT_ROOT + id + config.API_PROJECT_ACTION.UPDATE_DESCRIPTION, {
+        headers:{
+            'Content-type':'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify(data),
+    })
+    return await toJson(res);
+}
+
 // 削除
 export const deleteProject = async (id) =>{
     const res = await fetch(API_PROJECT_ROOT + id, {
         method: 'DELETE',
     })
-    return await toJson(res);
+    return await res;
 }

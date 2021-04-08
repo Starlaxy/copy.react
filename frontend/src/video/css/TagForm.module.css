@@ -1,0 +1,66 @@
+.dispBtn {
+    cursor: pointer;
+    margin: 10px;
+    font-weight: bold;
+    font-size: 110%;
+}
+
+.TagForm {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+
+.inputText {
+    background-color: white;
+    color: black;
+    margin: 0 10px;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 80%;
+}
+
+.storySelect {
+    margin: 10px;
+    line-height: 1.4;
+    background-color: white;
+    color: black;
+}
+
+.storySelectValue {
+    /* color: black; */
+}
+
+.createAreaBtn {
+    background-color: #436581;
+    width: 30%;
+    padding: 5px 10px;
+    text-align: center;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid white;
+}
+
+.radioWrap {
+    margin: 10px;
+}
+
+.radioInput{
+    display: none;
+}
+
+.radioLabel {
+    background-color: white;
+    color: #002C50;
+    font-size: 80%;
+    width: 100px;
+    padding: 5px;
+    margin: 3px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.radioChecked {
+    background-color: #F8B500;
+}

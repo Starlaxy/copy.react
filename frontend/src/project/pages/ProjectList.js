@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { getProject } from '../api/project'
 import { ProjectContent } from '../components/ProjectContent';
 import { ProjectForm } from '../components/ProjectForm';
-import '../css/project.css'
+
+import classes from  '../css/ProjectList.module.css'
 
 export const ProjectList = () => {
     const initialState = {
@@ -12,7 +13,7 @@ export const ProjectList = () => {
         created_at: '',
     }
 
-    const[project, setProject] = useState(initialState);
+    const[project, setProject] = useState([initialState]);
     const[loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -34,13 +35,11 @@ export const ProjectList = () => {
                     <p>loading...</p>
                 </div>
                 :
-                <div key='project' id='contents'>
-                    <div>
-                        <h2>プロジェクト一覧</h2>
-                        {project.map( p => <ProjectContent {...p} setProject={ setProject }  key={p.id} /> )}
-                        <ProjectForm setProject={ setProject } />
-                    </div>
-                </div>
+                <>
+                    <h2 className={ classes.h2 }>プロジェクト一覧</h2>
+                    {project.map( p => <ProjectContent {...p} setProject={ setProject } project={project} key={p.id} /> )}
+                    <ProjectForm setProject={ setProject } project={project} />
+                </>
             }
         </>
     )

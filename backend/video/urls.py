@@ -8,6 +8,7 @@ app_name ='video'
 router = routers.DefaultRouter()
 router.register('videorelation', views.VideoRelationViewSet, basename='videorelation')
 router.register('video', views.VideoViewSet, basename='video')
+router.register('tag', views.TagViewSet, basename='tag')
 
 urlpatterns =[
     path('', include(router.urls))

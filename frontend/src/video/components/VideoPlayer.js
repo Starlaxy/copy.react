@@ -21,7 +21,8 @@ export const VideoPlayer = React.memo(props => {
          position: 'absolute',
          top: 0,
          left: 0,
-         pointerEvents: pointerEvent
+         pointerEvents: pointerEvent,
+         zIndex: 1,
     };
 
     // 動画読み込み時にplayerに追加
@@ -112,18 +113,9 @@ export const VideoPlayer = React.memo(props => {
      *サブ動画クリックイベント(Swiching機能)
      * @param {VideoElement}
      */
-    const changeVideo = (targetEle) => {
-        const newVideo = [...props.all_video];
-
-        const target = newVideo.find(nv => String(nv.id) === targetEle.id);
-        newVideo.forEach((nv, index) => {
-            if(nv.id === target.id){
-                newVideo[index] = newVideo.find(nv => nv.id === props.mainVideoId);
-            }
-        });
-        newVideo[0] = target;
-        props.setVideo(newVideo);
-        props.setMainVideoId(target.id);
+    const changeVideo = (target) => {
+        props.setMainVideoId(Number(target.id));
+        props.setMainVideoEle(target);
     }
 
     return(

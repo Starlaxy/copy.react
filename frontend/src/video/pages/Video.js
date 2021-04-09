@@ -74,7 +74,23 @@ export const Video = () => {
         .catch(e => {
             throw new Error(e);
         })
-    }, [])
+    }, []);
+
+    /**
+     *動画再生イベント
+     */
+    const playVideo = () => {
+        player.map(p => p.play());
+        setIsPlay(true);
+    }
+
+    /**
+     *動画停止イベント
+     */
+    const pauseVideo = () => {
+        player.map(p => p.pause());
+        setIsPlay(false);
+    }
 
     /**
      *Video描画
@@ -116,7 +132,12 @@ export const Video = () => {
             }
         });
         return displayTag.map(t =>
-            <TagElement key={t.id} {...t} displayPopup={displayPopup} pointerEvent={(isCreatingTag) ? 'none' : 'auto'} />
+            <TagElement
+                key={t.id}
+                {...t}
+                displayPopup={displayPopup}
+                pointerEvent={(isCreatingTag) ? 'none' : 'auto'}
+                pauseVideo={pauseVideo} />
         );
     }
 
@@ -146,24 +167,25 @@ export const Video = () => {
      */
     const renderPopup = () => {
         if(isDisplayPopup){
-            const targetTag = video.find(v => v.id === popupIds.videoId).tags.find(t => t.id === popupIds.tagId);
+            // 新規タグならnewTagEleState(Form)の情報で表示
+            const targetTag = (popupIds !== undefined)
+                ? video.find(v => v.id === popupIds.videoId).tags.find(t => t.id === popupIds.tagId)
+                : newTagEleState
             return <PopupContent {...targetTag} setIsDisplayPopup={setIsDisplayPopup} />
         }
     }
 
     /**
      *POPUP表示
-     * @param {number} POPUPを表示するタグID
-     * @param {number} POPUPを表示するビデオID
+     * @param {number} POPUPを表示するタグID 新しいタグ時-1
+     * @param {number} POPUPを表示するビデオID 新しいタグ時-1
      */
-    const displayPopup = (tagId, videoId) => {
-        setPopupIds({
-            videoId: videoId,
-            tagId: tagId,
-        });
+    const displayPopup = (tagId = -1, videoId = -1) => {
+        (tagId !== -1)
+            ? setPopupIds({ videoId: videoId, tagId: tagId })
+            : setPopupIds();
         setIsDisplayPopup(true);
-        setIsPlay(false);
-        player.map(p => p.pause());
+        pauseVideo();
     }
 
     /**
@@ -198,7 +220,7 @@ export const Video = () => {
     const createTagArea = (e, id = -1) => {
         e.preventDefault();
         setIsCreatingTag(true);
-        player.map(p => p.pause());
+        pauseVideo();
         setCreatingTagState({...creatingTagState, id: id})
     }
 
@@ -218,7 +240,7 @@ export const Video = () => {
      */
     const renderNewTagEle = () => {
         if ((newTagEleState !== initialTagState) && (newTagEleState.display_frame <= currentFrame) && (currentFrame <= newTagEleState.hide_frame)){
-            return <NewTagElement {...newTagEleState} isCreatingTag={isCreatingTag} />
+            return <NewTagElement {...newTagEleState} isCreatingTag={isCreatingTag} displayPopup={displayPopup} />
         }
     }
 
@@ -259,7 +281,8 @@ export const Video = () => {
                         <VideoController
                             isPlay={isPlay}
                             setIsPlay={setIsPlay}
-                            player={player}
+                            pauseVideo={pauseVideo}
+                            playVideo={playVideo}
                             currentFrame={currentFrame}
                             setCurrentFrame={setCurrentFrame}
                             mainVideoId={mainVideoId}

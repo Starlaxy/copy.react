@@ -16,12 +16,14 @@ export const TagElement = (props) => {
         switch(props.action_type){
             case 'link':
                 window.open(props.url, '_blank');
+                props.pauseVideo();
                 break;
             case 'popup':
                 props.displayPopup(props.id, props.video);
                 break;
+            case 'story':
+                console.log('storyタグのプログラムは未完成だよ')
             default:
-                console.log(props.action_type);
                 break;
         }
     }

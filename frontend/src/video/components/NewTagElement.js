@@ -20,7 +20,7 @@ export const NewTagElement = (props) => {
                 window.open(props.url, '_blank');
                 break;
             case 'popup':
-                props.displayPopup(props.id, props.video);
+                props.displayPopup();
                 break;
             case 'story':
                 console.log(props.action_type);

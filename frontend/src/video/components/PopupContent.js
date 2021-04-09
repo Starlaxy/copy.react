@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CloseIcon from '../../images/video/close-icon.png'
 
@@ -6,7 +6,12 @@ import classes from  '../css/PopupContent.module.css'
 
 export const PopupContent = (props) => {
 
-    const imgSrc = 'http://localhost:8000' + props.popup_img;
+    const [imgSrc, setImgSrc] = useState();
+
+    // popup_img変更時にソースセット
+    useEffect(() => {
+        switchImgSrc();
+    }, [props.popup_img])
 
     /**
      *画像、テキスト表示
@@ -51,12 +56,28 @@ export const PopupContent = (props) => {
     }
 
     /**
+     *imgのソースをプレビューか判断する
+     */
+    const switchImgSrc = () => {
+        if(typeof(props.popup_img) == 'object'){
+            var reader = new FileReader()
+            reader.onload = (e) => {
+                setImgSrc(e.target.result)
+            };
+            reader.readAsDataURL(props.popup_img);
+        }
+        else {
+            setImgSrc('http://localhost:8000' + props.popup_img);
+        }
+    }
+
+    /**
      *LINKボタン描画
      *
      * @return {*} 
      */
     const renderLinkBtn = () => {
-        if(props.popup_btn_text !== ''){
+        if(props.popup_btn_text !== '' && props.popup_btn_text !== null){
             return (
                 <div className={classes.btnArea}>
                     <button className={classes.btn} onClick={() => popupBtnLink()}>{props.popup_btn_text}</button>

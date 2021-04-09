@@ -34,12 +34,11 @@ export const VideoController = (props) => {
      */
     const switchPlay = () => {
         if(props.isPlay){
-            props.player.map(p => p.pause());
+            props.pauseVideo();
         }
         else{
-            props.player.map(p => p.play());
+            props.playVideo();
         }
-        props.setIsPlay(!props.isPlay);
     }
 
     /**

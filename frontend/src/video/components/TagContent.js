@@ -34,6 +34,8 @@ export const TagContent = (props) => {
      */
     const handleDisplay = () => {
         setMount(!mount);
+        props.setMainVideoId(props.video);
+        props.setMainVideoEle(props.player.find(p => p.id === String(props.video)))
     }
 
     /**

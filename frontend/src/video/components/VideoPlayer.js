@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect } from "react"
 
 import classes from  '../css/VideoPlayer.module.css'
 
@@ -6,13 +6,28 @@ export const VideoPlayer = React.memo(props => {
 
     const ref = useRef();
 
+    const [isMouseDown, setIsMouseDown] = useState(false);
+    const mainVideoFlg = (props.id === props.mainVideoId);
+
+    const src = 'http://localhost:8000' + props.video;
+    const pointerEvent = (props.isCreatingTag) ? 'none' : 'auto';
+
+    const style = (mainVideoFlg)
+    ? { 
+        width: '100%' 
+    }
+    : {
+         width: '200px',
+         position: 'absolute',
+         top: 0,
+         left: 0,
+         pointerEvents: pointerEvent
+    };
+
+    // 動画読み込み時にplayerに追加
     useEffect(() => {
         props.player.push(ref.current);
     }, []);
-
-    const src = 'http://localhost:8000' + props.video;
-
-    const style = (props.mainVideoFlg) ? { width: '100%' } : undefined;
 
     /**
      *ビデオ読み込み後Durationセット（MAINVIDEOのみ）
@@ -20,18 +35,77 @@ export const VideoPlayer = React.memo(props => {
      * @param {videoElement}
      */
     const loadedMetadata = (target) => {
-        if(props.mainVideoFlg){
-            props.setMainVideo(target);
-        }
+        props.setMainVideoId(Number(target.id));
+        props.setMainVideoEle(target);
     }
 
     /**
      *動画終了時イベント
      */
     const onEnded = () => {
-        if(props.mainVideoFlg){
-            props.setIsPlay(false);   
+        props.setIsPlay(false);
+    }
+
+    /**
+     *領域指定ボタン押下後のマウスダウンイベント
+     *タグの大きさ、場所を設定
+     * @param {MouseEvent} e
+     */
+    const createTagMouseDown = (e) => {
+        setIsMouseDown(true);
+        props.setCreatingTagState({
+            ...props.creatingTagState,
+            startX: e.nativeEvent.offsetX,
+            startY: e.nativeEvent.offsetY,
+        });
+    };
+
+    /**
+     *タグ作成時、MOUSEDOWN後のMOUSEMOVEイベント
+     * @param {MouseEvent} e
+     */
+    const createTagMouseMove = (e) => {
+        // px単位で管理するとwindowサイズにより、相違が生まれるため％で管理
+        const width = (Math.max(e.nativeEvent.offsetX, props.creatingTagState.startX) - Math.min(e.nativeEvent.offsetX, props.creatingTagState.startX)) / e.target.clientWidth * 100;
+        const height = (Math.max(e.nativeEvent.offsetY, props.creatingTagState.startY) - Math.min(e.nativeEvent.offsetY, props.creatingTagState.startY)) / e.target.clientHeight * 100;
+        const left = Math.min(props.creatingTagState.startX, e.nativeEvent.offsetX) / e.target.clientWidth * 100;
+        const top = Math.min(props.creatingTagState.startY, e.nativeEvent.offsetY) / e.target.clientHeight * 100;
+        // 既存のタグ修正時
+        if(props.creatingTagState.id !== -1){
+            const newVideo = [...props.all_video];
+            newVideo.map(nv => {
+                nv.tags.map(nt => {
+                    if(nt.id === props.creatingTagState.id){
+                        // 5桁以下で管理したいため、*100/100
+                        nt.width = Math.floor(width * 100) / 100;
+                        nt.height = Math.floor(height * 100) / 100;
+                        nt.left = Math.floor(left * 100) / 100;
+                        nt.top = Math.floor(top * 100) / 100;
+                    }
+                });
+            });
+            props.setVideo(newVideo);
         }
+        // 新規タグ作成
+        else {
+            props.setNewTagEleState({
+                ...props.newTagEleState,
+                width: Math.floor(width * 100) / 100,
+                height: Math.floor(height * 100) / 100,
+                left: Math.floor(left * 100) / 100,
+                top: Math.floor(top * 100) / 100,
+            });
+        }
+    }
+
+    /**
+     *領域指定ボタン押下後のマウスアップイベント
+     *タグの大きさ、場所を設定(%)
+     * @param {MouseEvent} e
+     */
+    const createTagMouseUp = (e) => {
+        props.setIsCreatingTag(false);
+        setIsMouseDown(false);
     }
 
     /**
@@ -39,20 +113,17 @@ export const VideoPlayer = React.memo(props => {
      * @param {VideoElement}
      */
     const changeVideo = (targetEle) => {
-        if(!props.mainVideoFlg){
-            console.log('hogehoge')
-            const newVideo = [...props.all_video];
+        const newVideo = [...props.all_video];
 
-            const target = newVideo.find(nv => String(nv.id) === targetEle.id);
-            newVideo.forEach((nv, index) => {
-                if(nv => String(nv.id) === target.id){
-                    newVideo[index] = newVideo.find(nv => String(nv.id) === props.mainVideo.id);
-                }
-            });
-            newVideo[0] = target;
-            props.setVideo(newVideo);
-            props.setMainVideo(targetEle);
-        }
+        const target = newVideo.find(nv => String(nv.id) === targetEle.id);
+        newVideo.forEach((nv, index) => {
+            if(nv.id === target.id){
+                newVideo[index] = newVideo.find(nv => nv.id === props.mainVideoId);
+            }
+        });
+        newVideo[0] = target;
+        props.setVideo(newVideo);
+        props.setMainVideoId(target.id);
     }
 
     return(
@@ -62,12 +133,12 @@ export const VideoPlayer = React.memo(props => {
                 className={classes.video}
                 style={style}
                 ref={ref}
-                onLoadedMetadata={() => loadedMetadata(ref.current)}
-                onEnded={() => onEnded()}
-                onClick={() => changeVideo(ref.current)}
-                onMouseDown={(props.createTagMouseDown !== undefined) ? (e) => props.createTagMouseDown(e) : undefined}
-                onMouseMove={(props.createTagMouseMove !== undefined) ? (e) => props.createTagMouseMove(e) : undefined}
-                onMouseUp={(props.createTagMouseUp !== undefined) ? (e) => props.createTagMouseUp(e): undefined} >
+                onLoadedMetadata={(mainVideoFlg) ? () => loadedMetadata(ref.current) : undefined}
+                onEnded={(mainVideoFlg) ? () => onEnded() : undefined}
+                onMouseDown={(mainVideoFlg && props.isCreatingTag) ? (e) => createTagMouseDown(e) : undefined}
+                onMouseMove={(mainVideoFlg && isMouseDown) ? (e) => createTagMouseMove(e) : undefined}
+                onMouseUp={(mainVideoFlg && isMouseDown) ? (e) => createTagMouseUp(e): undefined}
+                onClick={(!mainVideoFlg) ? () => changeVideo(ref.current) : undefined} >
                 <source src={src} />
             </video>
         </>

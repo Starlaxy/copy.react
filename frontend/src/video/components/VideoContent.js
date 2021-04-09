@@ -124,6 +124,7 @@ export const VideoContent = (props) => {
         const target = newVideo.find(nv => String(nv.id) === targetEle.id);
         newVideo.forEach((nv, index) => {
             if(nv => String(nv.id) === target.id){
+                console.log(index)
                 newVideo[index] = newVideo.find(nv => String(nv.id) === mainVideo.id);
             }
         });

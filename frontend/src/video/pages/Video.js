@@ -24,14 +24,14 @@ export const Video = () => {
     const [video, setVideo] = useState(initialVideoState);
     // メインで表示しているVideo{}
     const [mainVideoId, setMainVideoId] = useState();
-
+    // <video>要素配列
     const [player, setPlayer] = useState([]);
-    const [mainVideo, setMainVideo] = useState(<video></video>);
+    const [mainVideoEle, setMainVideoEle] = useState(<video></video>);
+
     const [isPlay, setIsPlay] = useState(false);
 
     // タグ作成中か？
     const [isCreatingTag, setIsCreatingTag] = useState(false);
-    const [isMouseDown, setIsMouseDown] = useState(false);
 
     // タグ変更時の状態
     const [creatingTagState, setCreatingTagState] = useState(initialCreatingTagState);
@@ -81,39 +81,25 @@ export const Video = () => {
      * @return {JSX} VideoPlayer
      */
     const renderVideo = () => {
-        const [first, ...rest] = video;
-        const pointerEvent = (isCreatingTag) ? 'none' : 'auto';
-        const subVideoWrapStyle = {
-            pointerEvents: pointerEvent
-        }
         return (
-            <>
-                {first &&
-                    <VideoPlayer
-                        key={first.id}
-                        {...first}
-                        mainVideoFlg={true}
-                        player={player}
-                        setMainVideo={setMainVideo}
-                        setIsPlay={setIsPlay}
-                        createTagMouseDown={(isCreatingTag) ? createTagMouseDown : undefined}
-                        createTagMouseMove={(isMouseDown) ? createTagMouseMove : undefined}
-                        createTagMouseUp={(isMouseDown) ? createTagMouseUp : undefined} />
-                }
-                <div className={classes.subVideoWrap} style={subVideoWrapStyle}>
-                    {rest.map(v => 
-                        <VideoPlayer
-                            key={v.id}
-                            {...v}
-                            mainVideoFlg={false}
-                            player={player}
-                            all_video={video}
-                            setVideo={setVideo}
-                            mainVideo={mainVideo}
-                            setMainVideo={setMainVideo} />
-                    )}
-                </div>
-            </>
+            video.map(v => 
+                <VideoPlayer
+                    key={v.id}
+                    {...v}
+                    player={player}
+                    setIsPlay={setIsPlay}
+                    creatingTagState={creatingTagState}
+                    setCreatingTagState={setCreatingTagState}
+                    setVideo={setVideo}
+                    newTagEleState={newTagEleState}
+                    setNewTagEleState={setNewTagEleState}
+                    isCreatingTag={isCreatingTag}
+                    setIsCreatingTag={setIsCreatingTag}
+                    all_video={video}
+                    setMainVideoId={setMainVideoId}
+                    mainVideoId={mainVideoId}
+                    setMainVideoEle={setMainVideoEle} />
+            )
         )
     };
 
@@ -122,9 +108,9 @@ export const Video = () => {
      * @return {JSX} 
      */
     const renderTagElement = () => {
-        const [first] = video;
+        const targetVideo = video.find(v => v.id === mainVideoId);
         const displayTag = [];
-        first.tags.map(t => {
+        targetVideo.tags.map(t => {
             if((t.display_frame <= currentFrame) && (currentFrame <= t.hide_frame)){
                 displayTag.push(t);
             }
@@ -151,7 +137,7 @@ export const Video = () => {
                 break;
         }
         newVideo.find(nv => nv.id === videoId).tags.find(t => t.id === id)[e.target.name] = value;
-        setVideo(newVideo)
+        setVideo(newVideo);
     }
 
     /**
@@ -196,7 +182,10 @@ export const Video = () => {
                     setVideo={setVideo}
                     changeCurrentFrame={changeCurrentFrame}
                     handleChangeTagForm={handleChangeTagForm}
-                    storyVideo={storyVideo} />
+                    storyVideo={storyVideo}
+                    setMainVideoId={setMainVideoId}
+                    player={player}
+                    setMainVideoEle={setMainVideoEle} />
             )
         )
     }
@@ -224,58 +213,6 @@ export const Video = () => {
     }
 
     /**
-     *領域指定ボタン押下後のマウスダウンイベント
-     *タグの大きさ、場所を設定
-     * @param {MouseEvent} e
-     */
-    const createTagMouseDown = (e) => {
-        setIsMouseDown(true);
-        setCreatingTagState({
-            ...creatingTagState,
-            startX: e.nativeEvent.offsetX,
-            startY: e.nativeEvent.offsetY,
-        });
-    };
-
-    /**
-     *タグ作成時、MOUSEDOWN後のMOUSEMOVEイベント
-     * @param {MouseEvent} e
-     */
-    const createTagMouseMove = (e) => {
-        // px単位で管理するとwindowサイズにより、相違が生まれるため％で管理
-        const width = (Math.max(e.nativeEvent.offsetX, creatingTagState.startX) - Math.min(e.nativeEvent.offsetX, creatingTagState.startX)) / e.target.clientWidth * 100;
-        const height = (Math.max(e.nativeEvent.offsetY, creatingTagState.startY) - Math.min(e.nativeEvent.offsetY, creatingTagState.startY)) / e.target.clientHeight * 100;
-        const left = Math.min(creatingTagState.startX, e.nativeEvent.offsetX) / e.target.clientWidth * 100;
-        const top = Math.min(creatingTagState.startY, e.nativeEvent.offsetY) / e.target.clientHeight * 100;
-        // 既存のタグ修正時
-        if(creatingTagState.id !== -1){
-            const newVideo = [...video];
-            newVideo.map(nv => {
-                nv.tags.map(nt => {
-                    if(nt.id === creatingTagState.id){
-                        // 5桁以下で管理したいため、*100/100
-                        nt.width = Math.floor(width * 100) / 100;
-                        nt.height = Math.floor(height * 100) / 100;
-                        nt.left = Math.floor(left * 100) / 100;
-                        nt.top = Math.floor(top * 100) / 100;
-                    }
-                });
-            });
-            setVideo(newVideo);
-        }
-        // 新規タグ作成
-        else {
-            setNewTagEleState({
-                ...newTagEleState,
-                width: Math.floor(width * 100) / 100,
-                height: Math.floor(height * 100) / 100,
-                left: Math.floor(left * 100) / 100,
-                top: Math.floor(top * 100) / 100,
-            });
-        }
-    }
-
-    /**
      *新規タグ作成時に表示するタグ
      * @return {*} 
      */
@@ -286,22 +223,14 @@ export const Video = () => {
     }
 
     /**
-     *領域指定ボタン押下後のマウスアップイベント
-     *タグの大きさ、場所を設定(%)
-     * @param {MouseEvent} e
-     */
-    const createTagMouseUp = (e) => {
-        setIsCreatingTag(false);
-        setIsMouseDown(false);
-    }
-
-    /**
      *currentFrame変更イベント
      * @param {number} frame
      */
     const changeCurrentFrame = (frame) => {
         setCurrentFrame(frame);
-        mainVideo.currentTime = frame / 30;
+        player.map(p => {
+            p.currentTime = frame / 30;
+        });
     }
 
     return(
@@ -328,12 +257,13 @@ export const Video = () => {
                         </div>
                         {/* ビデオコントロールバー */}
                         <VideoController
-                            mainVideo={mainVideo}
                             isPlay={isPlay}
                             setIsPlay={setIsPlay}
                             player={player}
                             currentFrame={currentFrame}
-                            setCurrentFrame={setCurrentFrame} />
+                            setCurrentFrame={setCurrentFrame}
+                            mainVideoId={mainVideoId}
+                            mainVideoEle={mainVideoEle} />
                     </div>
                     {/* タグフォーム */}
                     <div className={classes.tagWrap} >
@@ -347,7 +277,8 @@ export const Video = () => {
                             setNewTagEleState={setNewTagEleState}
                             setIsCreatingTag={setIsCreatingTag}
                             changeCurrentFrame={changeCurrentFrame}
-                            storyVideo={storyVideo} />
+                            storyVideo={storyVideo}
+                            mainVideoId={mainVideoId} />
                     </div>
                 </>
             }

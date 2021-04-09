@@ -7,19 +7,19 @@ import classes from  '../css/VideoController.module.css'
 
 export const VideoController = (props) => {
     
-    const totalFrame = (props.mainVideo.duration * 30) | 0;
+    const totalFrame = (props.mainVideoEle.duration * 30) | 0;
     const [intervalId, setIntarvalId] = useState(0);
     const fps = 30;
 
     const style = {
-        left: (props.mainVideo.currentTime / props.mainVideo.duration) * 100 + '%'
+        left: (props.mainVideoEle.currentTime / props.mainVideoEle.duration) * 100 + '%'
     }
 
     // frame上昇
     useEffect(() => {
         if(props.isPlay){
             var id = setInterval(() => {
-                props.setCurrentFrame(props.mainVideo.currentTime * fps);
+                props.setCurrentFrame(props.mainVideoEle.currentTime * fps);
                 return () => clearInterval(id);
             }, fps);
             setIntarvalId(id);
@@ -61,9 +61,9 @@ export const VideoController = (props) => {
                 <div className={classes.seekbarNow} style={style} ></div>
             </div>
             <div className={classes.time}>
-                <div className={classes.currrentTime}>{secondsToTime(props.mainVideo.currentTime)}</div>
+                <div className={classes.currrentTime}>{secondsToTime(props.mainVideoEle.currentTime)}</div>
                 <div>/</div>
-                <div className={classes.duration}>{secondsToTime(props.mainVideo.duration)}</div>
+                <div className={classes.duration}>{secondsToTime(props.mainVideoEle.duration)}</div>
             </div>
             <div className={classes.frame}>
                 <div className={classes.currentFrame}>{Math.ceil(props.currentFrame)}</div>

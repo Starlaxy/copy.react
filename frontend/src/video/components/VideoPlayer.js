@@ -19,8 +19,8 @@ export const VideoPlayer = React.memo(props => {
     : {
          width: '200px',
          position: 'absolute',
-         top: 0,
-         left: 0,
+         bottom: '20px',
+         right: ((props.index - 1) * 200) + 20 + 'px',
          pointerEvents: pointerEvent,
          zIndex: 1,
     };
@@ -122,7 +122,6 @@ export const VideoPlayer = React.memo(props => {
         <>
             <video muted
                 id={props.id}
-                className={classes.video}
                 style={style}
                 ref={ref}
                 onLoadedMetadata={(mainVideoFlg) ? () => loadedMetadata(ref.current) : undefined}

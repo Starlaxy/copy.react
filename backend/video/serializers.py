@@ -72,7 +72,7 @@ class TagSerializer(serializers.ModelSerializer):
             'action_type',
             'url',
             'story_next_video',
-            'story_start_flame',
+            'story_start_frame',
             'popup_type',
             'popup_img',
             'popup_text',

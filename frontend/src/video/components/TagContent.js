@@ -110,7 +110,7 @@ export const TagContent = (props) => {
                             {renderStoryVideoCol()}
                         </select>
                         <label htmlFor={"story-start-frame" + props.id}>ストーリー開始フレーム</label>
-                        <input name={"story-start-frame" + props.id} type='number' name='story_start_flame' value={ props.story_start_flame } onChange={ (e) => handleChange(e) } />
+                        <input name={"story-start-frame" + props.id} type='number' name='story_start_frame' value={ props.story_start_frame } onChange={ (e) => handleChange(e) } />
                     </>
                 )
         }
@@ -180,7 +180,7 @@ export const TagContent = (props) => {
 
             default:
                 formData.append('story_next_video', props.story_next_video);
-                formData.append('story_start_flame', props.story_start_flame);
+                formData.append('story_start_frame', props.story_start_frame);
                 break;
         }
 

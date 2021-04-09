@@ -114,8 +114,8 @@ export const TagForm = (props) => {
                     <select id='story-next-video' value={props.newTagEleState.story_next_video} className={classes.storySelect} name='story_next_video' onChange={ (e) => handleChange(e) }>
                         {renderStoryVideoCol()}
                     </select>
-                    <label htmlFor='story-next-frame'>ストーリー開始フレーム</label>
-                    <input id='story-next-frame' type='number' name='story_start_flame' value={props.newTagEleState.story_start_flame} onChange={ (e) => handleChange(e) } />
+                    <label htmlFor='story-start-frame'>ストーリー開始フレーム</label>
+                    <input id='story-start-frame' type='number' name='story_start_frame' value={props.newTagEleState.story_start_frame} onChange={ (e) => handleChange(e) } />
                 </>
             )
         }
@@ -181,7 +181,7 @@ export const TagForm = (props) => {
 
             default:
                 formData.append('story_next_video', props.newTagEleState.story_next_video);
-                formData.append('story_start_flame', props.newTagEleState.story_start_flame);
+                formData.append('story_start_frame', props.newTagEleState.story_start_frame);
                 break;
         }
 

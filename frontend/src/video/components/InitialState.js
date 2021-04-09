@@ -4,7 +4,7 @@ export const initialTagState = {
         'action_type': 'link',
         'url': '',
         'story_next_video': 0,
-        'story_start_flame': 0,
+        'story_start_frame': 0,
         'popup_type': 'default',
         'popup_img': null,
         'popup_text': '',

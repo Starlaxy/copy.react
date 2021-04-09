@@ -56,7 +56,7 @@ class Tag(models.Model):
     action_type = models.CharField(max_length=20)
     url = models.CharField(max_length=100, default='', blank=True, null=True)
     story_next_video = models.ForeignKey(VideoRelation, default='', on_delete=models.CASCADE, related_name='story_next_video', blank=True, null=True)
-    story_start_flame = models.IntegerField(default=0, null=True, blank=True)
+    story_start_frame = models.IntegerField(default=0, null=True, blank=True)
     popup_type = models.CharField(max_length=20, default='', blank=True, null=True)
     popup_img = models.FileField(upload_to=get_popup_upload_to, null=True, blank=True)
     popup_text = models.CharField(max_length=100, default='', blank=True, null=True)

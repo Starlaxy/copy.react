@@ -23,7 +23,7 @@ export const NewTagElement = (props) => {
                 props.displayPopup();
                 break;
             case 'story':
-                console.log(props.action_type);
+                props.displayStoryLayer();
                 break;
 
             default:

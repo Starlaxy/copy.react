@@ -5,30 +5,30 @@ import classes from  '../css/TagElement.module.css'
 export const TagElement = (props) => {
 
     const style = {
-        width: props.width + '%',
-        height: props.height + '%',
-        top: props.top + '%',
-        left: props.left + '%',
-        pointerEvents: props.pointerEvent,
+        width: props.tag.width + '%',
+        height: props.tag.height + '%',
+        top: props.tag.top + '%',
+        left: props.tag.left + '%',
+        pointerEvents: props.tag.pointerEvent,
     }
 
     const handleClick = () => {
-        switch(props.action_type){
+        switch(props.tag.action_type){
             case 'link':
-                window.open(props.url, '_blank');
+                window.open(props.tag.url, '_blank');
                 props.pauseVideo();
                 break;
             case 'popup':
-                props.displayPopup(props.id, props.video);
+                props.displayPopup(props.tag);
                 break;
             case 'story':
-                console.log('storyタグのプログラムは未完成だよ')
+                props.displayStoryLayer(props.tag);
             default:
                 break;
         }
     }
 
     return (
-        <div className={classes.tag} style={style} onClick={() => handleClick()}>{props.title}</div>
+        <div className={classes.tag} style={style} onClick={() => handleClick()}>{props.tag.title}</div>
     )
 }

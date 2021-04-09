@@ -8,6 +8,7 @@ import { TagForm } from '../components/TagForm'
 import { TagElement } from '../components/TagElement'
 import { NewTagElement } from '../components/NewTagElement'
 import { PopupContent } from '../components/PopupContent'
+import { StoryLayer } from '../components/StoryLayer'
 import { initialVideoState, initialTagState, initialCreatingTagState } from '../components/InitialState'
 import { getVideo, getStoryVideo } from '../api/video';
 // デザインmodule
@@ -42,15 +43,15 @@ export const Video = () => {
     const [newTagEleState, setNewTagEleState] = useState(initialTagState);
 
     // POPUPの情報
-    const [popupIds, setPopupIds] = useState({
-        videoId: undefined,
-        tagId: undefined,
-    });
+    const [popupTag, setPopupTag] = useState();
     // POPUP表示中か？
     const [isDisplayPopup, setIsDisplayPopup] = useState(false);
 
     // storyVideo
-    const [storyVideo, setStoryVideo] = useState([initialVideoState])
+    const [storyVideo, setStoryVideo] = useState([initialVideoState]);
+    const [storyTag, setStoryTag] = useState();
+    // Storyタグ押下時のレイヤー表示フラグ
+    const [isDisplayStoryLayer, setIsDisplayStoryLayer] = useState(false);
 
     // VideoRelationに紐づくVideo、Tag情報取得
     useEffect(() => {
@@ -98,9 +99,10 @@ export const Video = () => {
      */
     const renderVideo = () => {
         return (
-            video.map(v => 
+            video.map((v, index) => 
                 <VideoPlayer
                     key={v.id}
+                    index={index}
                     {...v}
                     player={player}
                     setIsPlay={setIsPlay}
@@ -134,10 +136,11 @@ export const Video = () => {
         return displayTag.map(t =>
             <TagElement
                 key={t.id}
-                {...t}
-                displayPopup={displayPopup}
+                tag={t}
                 pointerEvent={(isCreatingTag) ? 'none' : 'auto'}
-                pauseVideo={pauseVideo} />
+                pauseVideo={pauseVideo}
+                displayPopup={displayPopup}
+                displayStoryLayer={displayStoryLayer} />
         );
     }
 
@@ -168,8 +171,8 @@ export const Video = () => {
     const renderPopup = () => {
         if(isDisplayPopup){
             // 新規タグならnewTagEleState(Form)の情報で表示
-            const targetTag = (popupIds !== undefined)
-                ? video.find(v => v.id === popupIds.videoId).tags.find(t => t.id === popupIds.tagId)
+            const targetTag = (popupTag !== undefined)
+                ? popupTag
                 : newTagEleState
             return <PopupContent {...targetTag} setIsDisplayPopup={setIsDisplayPopup} />
         }
@@ -177,14 +180,36 @@ export const Video = () => {
 
     /**
      *POPUP表示
-     * @param {number} POPUPを表示するタグID 新しいタグ時-1
-     * @param {number} POPUPを表示するビデオID 新しいタグ時-1
+     * @param {Object} targetTag 表示するPOPUPタグ情報
      */
-    const displayPopup = (tagId = -1, videoId = -1) => {
-        (tagId !== -1)
-            ? setPopupIds({ videoId: videoId, tagId: tagId })
-            : setPopupIds();
+    const displayPopup = (targetTag) => {
+        setPopupTag(targetTag);
         setIsDisplayPopup(true);
+        pauseVideo();
+    }
+
+    /**
+     *Storyタグ描画
+     * @return {*} 
+     */
+    const renderStoryLayer = () => {
+        console.log(storyTag)
+        if(isDisplayStoryLayer){
+            const targetTag = (storyTag !== undefined)
+                ? storyTag
+                : newTagEleState;
+            return <StoryLayer {...targetTag} setIsDisplayStoryLayer={setIsDisplayStoryLayer} />
+        }
+    }
+
+    /**
+     *StoryLayer表示イベント
+     * @param {Object} targetTag 表示するStoryタグ情報
+     */
+    const displayStoryLayer = (targetTag) => {
+        console.log(targetTag)
+        setStoryTag(targetTag);
+        setIsDisplayStoryLayer(true);
         pauseVideo();
     }
 
@@ -240,7 +265,7 @@ export const Video = () => {
      */
     const renderNewTagEle = () => {
         if ((newTagEleState !== initialTagState) && (newTagEleState.display_frame <= currentFrame) && (currentFrame <= newTagEleState.hide_frame)){
-            return <NewTagElement {...newTagEleState} isCreatingTag={isCreatingTag} displayPopup={displayPopup} />
+            return <NewTagElement {...newTagEleState} isCreatingTag={isCreatingTag} displayPopup={displayPopup} displayStoryLayer={displayStoryLayer} />
         }
     }
 
@@ -276,6 +301,8 @@ export const Video = () => {
                             {renderCreateTagLayer()}
                             {/* POPUPエリア */}
                             {renderPopup()}
+                            {/* StoryLayer */}
+                            {renderStoryLayer()}
                         </div>
                         {/* ビデオコントロールバー */}
                         <VideoController

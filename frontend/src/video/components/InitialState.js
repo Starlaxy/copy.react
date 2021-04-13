@@ -21,8 +21,9 @@ export const initialTagState = {
 
 export const initialVideoState = {
     id: '',
-    title: '',
+    video_relation: 0,
     video: null,
+    three_dimensional_flg: false,
     tags: initialTagState,
 }
 

@@ -6,7 +6,8 @@ import classes from  '../css/StoryLayer.module.css'
 
 export const StoryLayer = (props) => {
 
-    console.log(props)
+    const storyVideo = props.storyVideo.find(sv => sv.id === props.story_next_video)
+    console.log(storyVideo)
 
     /**
      *Layer閉じるボタン押下イベント
@@ -15,12 +16,10 @@ export const StoryLayer = (props) => {
         props.setIsDisplayStoryLayer(false);
     }
 
-    console.log(props.story_start_frame)
-
     return (
         <div className={classes.storyLayer}>
             <div>
-                <p>{props.story_next_video}に遷移するイベント</p>
+                <p>{storyVideo.title}に遷移するイベント</p>
                 <p>開始フレーム：{props.story_start_frame}</p>
             </div>
             <img src={CloseIcon} alt='閉じるボタン' className={classes.closeIcon} onClick={() => closeLayer()} />

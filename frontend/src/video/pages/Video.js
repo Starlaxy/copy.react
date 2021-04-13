@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 // componentsインポート
 import { VideoPlayer } from '../components/VideoPlayer'
+import { ThreeDimVideoPlayer } from '../components/ThreeDimVideoPlayer'
 import { VideoController } from '../components/VideoController'
 import { TagContent } from '../components/TagContent'
 import { TagForm } from '../components/TagForm'
@@ -99,25 +100,47 @@ export const Video = () => {
      */
     const renderVideo = () => {
         return (
-            video.map((v, index) => 
-                <VideoPlayer
-                    key={v.id}
-                    index={index}
-                    {...v}
-                    player={player}
-                    setIsPlay={setIsPlay}
-                    creatingTagState={creatingTagState}
-                    setCreatingTagState={setCreatingTagState}
-                    setVideo={setVideo}
-                    newTagEleState={newTagEleState}
-                    setNewTagEleState={setNewTagEleState}
-                    isCreatingTag={isCreatingTag}
-                    setIsCreatingTag={setIsCreatingTag}
-                    all_video={video}
-                    setMainVideoId={setMainVideoId}
-                    mainVideoId={mainVideoId}
-                    setMainVideoEle={setMainVideoEle} />
-            )
+            video.map((v, index) => {
+                if(v.three_dimensional_flg){
+                    return (
+                        <ThreeDimVideoPlayer
+                            key={v.id}
+                            {...v}
+                            player={player}
+                            setMainVideoId={setMainVideoId}
+                            setMainVideoEle={setMainVideoEle}
+                            isCreatingTag={isCreatingTag}
+                            setIsCreatingTag={setIsCreatingTag}
+                            creatingTagState={creatingTagState}
+                            setCreatingTagState={setCreatingTagState}
+                            all_video={video}
+                            setVideo={setVideo}
+                            newTagEleState={newTagEleState}
+                            setNewTagEleState={setNewTagEleState} />
+                    )
+                }
+                else{
+                    return (
+                        <VideoPlayer
+                            key={v.id}
+                            index={index}
+                            {...v}
+                            player={player}
+                            setIsPlay={setIsPlay}
+                            creatingTagState={creatingTagState}
+                            setCreatingTagState={setCreatingTagState}
+                            setVideo={setVideo}
+                            newTagEleState={newTagEleState}
+                            setNewTagEleState={setNewTagEleState}
+                            isCreatingTag={isCreatingTag}
+                            setIsCreatingTag={setIsCreatingTag}
+                            all_video={video}
+                            setMainVideoId={setMainVideoId}
+                            mainVideoId={mainVideoId}
+                            setMainVideoEle={setMainVideoEle} />
+                    )
+                }
+            })
         )
     };
 
@@ -193,12 +216,11 @@ export const Video = () => {
      * @return {*} 
      */
     const renderStoryLayer = () => {
-        console.log(storyTag)
         if(isDisplayStoryLayer){
             const targetTag = (storyTag !== undefined)
                 ? storyTag
                 : newTagEleState;
-            return <StoryLayer {...targetTag} setIsDisplayStoryLayer={setIsDisplayStoryLayer} />
+            return <StoryLayer {...targetTag} setIsDisplayStoryLayer={setIsDisplayStoryLayer} storyVideo={storyVideo} />
         }
     }
 
@@ -207,7 +229,6 @@ export const Video = () => {
      * @param {Object} targetTag 表示するStoryタグ情報
      */
     const displayStoryLayer = (targetTag) => {
-        console.log(targetTag)
         setStoryTag(targetTag);
         setIsDisplayStoryLayer(true);
         pauseVideo();

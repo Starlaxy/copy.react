@@ -6,7 +6,7 @@ import StopIcon from '../../images/video/stop_btn.png'
 import classes from  '../css/VideoController.module.css'
 
 export const VideoController = (props) => {
-    
+
     const totalFrame = (props.mainVideoEle.duration * 30) | 0;
     const [intervalId, setIntarvalId] = useState(0);
     const fps = 30;

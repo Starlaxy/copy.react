@@ -1,0 +1,24 @@
+/* ProjectList */
+.h2 {
+    font-weight: bold;
+    font-size: 150%;
+    padding: 20px 0;
+}
+
+/* ロード画面 */
+.loadingLayer {
+    width: 100%;
+    height: calc(100% - 12vh);
+    position: absolute;
+    top: 6vh;
+    left: 0;
+    background-color: #F4F6F9;
+    z-index: 20;
+    text-align: center;
+}
+
+.loadingText {
+    font-size: 120%;
+    font-weight: bold;
+    color: #073B67;
+}

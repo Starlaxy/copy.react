@@ -23,6 +23,7 @@ class VideoRelationViewSet(viewsets.ModelViewSet):
         """
         プロジェクトIDからVideoRelation取得
         """
+        print(pk)
         videorelation = VideoRelation.objects.filter(project=pk)
         serializers = VideoRelationSerializer(videorelation, many=True)
         return Response(serializers.data)

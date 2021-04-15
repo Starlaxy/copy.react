@@ -1,0 +1,74 @@
+/* サイドバー */
+.tagWrap {
+    width: 350px;
+    overflow-y: scroll;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #8497B0;
+    color: white;
+}
+
+/* 動画、コントロールバー */
+.videoPlayer {
+    width: calc(100% - 350px);
+    position: relative;
+}
+
+/* ビデオ要素全体 */
+.videoContents {
+    position: relative;
+    overflow: hidden;
+}
+
+/* 2個目移行のVideoを囲む要素 */
+.subVideoWrap {
+    display: flex;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    height: 100px;
+    z-index: 1;
+}
+
+/* タグ作成時レイヤー */
+.createTagLayer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #CCC;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ロード画面 */
+.loadingDataLayer {
+    width: 100%;
+    height: calc(100% - 12vh);
+    position: absolute;
+    top: 6vh;
+    left: 0;
+    background-color: #F4F6F9;
+    z-index: 20;
+    text-align: center;
+}
+
+.loadingLayer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #F4F6F9;
+    z-index: 20;
+    text-align: center;
+}
+
+.loadingText {
+    font-size: 120%;
+    font-weight: bold;
+    color: #073B67;
+}

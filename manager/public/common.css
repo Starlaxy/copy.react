@@ -1,0 +1,13 @@
+body {
+    background-color: #F4F6F9;
+    color: #555;
+}
+
+footer {
+    height: 6vh;
+    width: 100%;
+    color: black;
+    background-color: #DEE7F7;
+    position: absolute;
+    bottom: 0;
+}

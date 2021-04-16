@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { VideoPlayer } from '../components/VideoPlayer'
+import { VideoController } from '../components/VideoController'
 
 import { initialVideoState } from '../components/InitialState'
 import { getVideo } from '../api/video';
@@ -19,6 +20,13 @@ export const Video = () => {
     const { id } = useParams();
 
     const [video, setVideo]= useState(initialVideoState);
+    const [isPlay, setIsPlay] = useState(false);
+
+    const [mainVideoId, setMainVideoId] = useState();
+    const [player, setPlayer] = useState([]);
+    const [mainVideoEle, setMainVideoEle] = useState(<video></video>);
+
+    const [currentFrame, setCurrentFrame] = useState(0);
 
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [isLoadingVideo, setIsLoadingVideo] = useState(true);
@@ -28,6 +36,7 @@ export const Video = () => {
         getVideo(id)
         .then(v => {
             setVideo(v);
+            setMainVideoId(v[0].id);
             setIsLoadingData(false);
         })
         .catch(e => {
@@ -37,10 +46,33 @@ export const Video = () => {
 
     const renderVideo = () => {
         return (
-            video.map(v => (
-                <VideoPlayer key={v.id} {...v} />
+            video.map((v, index) => (
+                <VideoPlayer
+                    key={v.id}
+                    {...v}
+                    index={index}
+                    setIsLoadingVideo={setIsLoadingVideo}
+                    mainVideoId={mainVideoId}
+                    setMainVideoEle={setMainVideoEle}
+                    player={player} />
             ))
         )
+    }
+
+    /**
+     *動画再生イベント
+     */
+    const playVideo = () => {
+        player.map(p => p.play());
+        setIsPlay(true);
+    }
+
+    /**
+     *動画停止イベント
+     */
+    const pauseVideo = () => {
+        player.map(p => p.pause());
+        setIsPlay(false);
     }
 
     return(
@@ -53,7 +85,20 @@ export const Video = () => {
                 </div>
                 :
                 <>
+                    {isLoadingVideo &&
+                        <div className={classes.loadingLayer}>
+                            <img src={LoadingImg} />
+                            <p className={classes.loadingText}>Loading...</p>
+                        </div>
+                    }
                     {renderVideo()}
+                    <VideoController
+                        isPlay={isPlay}
+                        mainVideoEle={mainVideoEle}
+                        currentFrame={currentFrame}
+                        setCurrentFrame={setCurrentFrame}
+                        playVideo={playVideo}
+                        pauseVideo={pauseVideo} />
                 </>
             }
         </>

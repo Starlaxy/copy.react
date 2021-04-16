@@ -1,18 +1,27 @@
 import React from 'react';
+import * as THREE from 'three'
 
 import classes from  '../css/NewTagElement.module.css'
 
 export const NewTagElement = (props) => {
 
-    const pointerEvent = (props.isCreatingTag) ? 'none' : 'auto';
+    const mainCanvas = document.getElementsByTagName('canvas')[0];
 
-    const style = {
-        width: props.width + '%',
-        height: props.height + '%',
-        top: props.top + '%',
-        left: props.left + '%',
-        pointerEvents: pointerEvent,
-    }
+    const style = (props.three_dimensional_flg)
+        ? {
+            width: props.width + '%',
+            height: props.height + '%',
+            top: (mainCanvas.height * (props.top / 100)) + (THREE.Math.degToRad(props.lat - 90) * 500) + 'px',
+            left: (mainCanvas.width * (props.left / 100)) + (THREE.Math.degToRad(props.lon) * -500) + 'px',
+            pointerEvents: props.pointerEvent,
+        }
+        : {
+            width: props.width + '%',
+            height: props.height + '%',
+            top: props.top + '%',
+            left: props.left + '%',
+            pointerEvents: props.pointerEvent,
+        }
 
     const handleClick = () => {
         switch(props.action_type){

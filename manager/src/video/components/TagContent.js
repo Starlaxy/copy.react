@@ -57,15 +57,6 @@ export const TagContent = (props) => {
     }
 
     /**
-     *フォームのフレーム変更時イベント
-     * @param {onChange} e
-     */
-    const handleChangeFrame = (e) => {
-        props.changeCurrentFrame(e.target.value);
-        props.handleChangeTagForm(e, props.id, props.video);
-    }
-
-    /**
      * タグタイプ毎の入力項目を返す関数
      *
      * @return {JSX} input 
@@ -240,9 +231,9 @@ export const TagContent = (props) => {
                         </div>
                         { renderTagTypeCol() }
                         <label htmlFor={"display-frame" + props.id}>開始フレーム</label>
-                        <input id={"display-frame" + props.id} className={classes.inputText} type='number' name='display_frame' value={ props.display_frame } onChange={ (e) => handleChangeFrame(e) } />
+                        <input id={"display-frame" + props.id} className={classes.inputText} type='number' name='display_frame' value={ props.display_frame } onChange={ (e) => handleChange(e) } />
                         <label htmlFor={"hide-frame" + props.id}>終了フレーム</label>
-                        <input id={"hide-frame" + props.id} className={classes.inputText} type='number' name='hide_frame' value={ props.hide_frame } onChange={ (e) => handleChangeFrame(e) } />
+                        <input id={"hide-frame" + props.id} className={classes.inputText} type='number' name='hide_frame' value={ props.hide_frame } onChange={ (e) => handleChange(e) } />
                         <button onClick={ (e) => handleSubmit(e) }>送信</button>
                         <button onClick={ (e) => handleDelete(e) }>削除</button>
                     </div>

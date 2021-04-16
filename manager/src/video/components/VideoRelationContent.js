@@ -18,8 +18,6 @@ export const VideoRelationContent = (props) => {
 
     const history = useHistory();
 
-    console.log(props.id)
-
     const handleClick = () => {
         history.push(`/video/${getEncryptedString(props.id)}`)
     }

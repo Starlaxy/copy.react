@@ -51,6 +51,8 @@ class VideoRelationViewSet(viewsets.ModelViewSet):
             three_dimensional_flags = request.data.getlist('three_dimensional_flg')
             thumb_flg = True
 
+            print('hogehoge')
+
             # video登録数分ループ
             for index, video in enumerate(videos):
 
@@ -73,6 +75,8 @@ class VideoRelationViewSet(viewsets.ModelViewSet):
             # Response用
             serializers = VideoRelationSerializer(videorelation_serializer.instance)
             return Response(serializers.data)
+        else:
+            print(videorelation_serializer.errors)
         
         return Response(videorelation_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

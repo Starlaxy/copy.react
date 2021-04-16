@@ -46,6 +46,10 @@ export const Video = () => {
     const [creatingTagState, setCreatingTagState] = useState(initialCreatingTagState);
     // 現在のフレーム
     const [currentFrame, setCurrentFrame] = useState(0);
+    // fps
+    const fps = 30;
+    // MAINVIDEOのフレーム数
+    const [totalFrame, setTotalFrame] = useState(0);
 
     // 新規タグ情報
     const [newTagEleState, setNewTagEleState] = useState(initialTagState);
@@ -136,7 +140,10 @@ export const Video = () => {
                             setLat={setLat}
                             canMove={canMove}
                             setCanMove={setCanMove}
-                            setIsLoadingVideo={setIsLoadingVideo} />
+                            setIsLoadingVideo={setIsLoadingVideo}
+                            fps={fps}
+                            setTotalFrame={setTotalFrame}
+                            setIsPlay={setIsPlay} />
                     )
                 }
                 else{
@@ -158,7 +165,9 @@ export const Video = () => {
                             mainVideoId={mainVideoId}
                             setMainVideoId={setMainVideoId}
                             setMainVideoEle={setMainVideoEle}
-                            setIsLoadingVideo={setIsLoadingVideo} />
+                            setIsLoadingVideo={setIsLoadingVideo}
+                            fps={fps}
+                            setTotalFrame={setTotalFrame} />
                     )
                 }
             })
@@ -195,8 +204,18 @@ export const Video = () => {
      const handleChangeTagForm = (e, id, videoId) => {
         var newVideo = [...video]
         var value;
-        switch (e.target.type) {
-            case "file":
+        switch (e.target.name) {
+            case "display_frame":
+                value = (e.target.value < 0) ? 0 : e.target.value;
+                setCurrentFrame(value);
+                break;
+
+            case "hide_frame":
+                value = (totalFrame < e.target.value) ? totalFrame : e.target.value;
+                setCurrentFrame(value);
+                break;
+
+            case "popup_img":
                 value = e.target.files[0];
                 break;
         
@@ -307,7 +326,17 @@ export const Video = () => {
      */
     const renderNewTagEle = () => {
         if ((newTagEleState !== initialTagState) && (newTagEleState.display_frame <= currentFrame) && (currentFrame <= newTagEleState.hide_frame)){
-            return <NewTagElement {...newTagEleState} isCreatingTag={isCreatingTag} displayPopup={displayPopup} displayStoryLayer={displayStoryLayer} />
+            return (
+                <NewTagElement
+                    pointerEvent={(isCreatingTag || canMove) ? 'none' : 'auto'}
+                    {...newTagEleState}
+                    isCreatingTag={isCreatingTag}
+                    displayPopup={displayPopup}
+                    displayStoryLayer={displayStoryLayer}
+                    three_dimensional_flg={video.find(v => v.id === mainVideoId).three_dimensional_flg}
+                    lon={lon}
+                    lat={lat} />
+            )
         }
     }
 
@@ -361,8 +390,11 @@ export const Video = () => {
                             playVideo={playVideo}
                             currentFrame={currentFrame}
                             setCurrentFrame={setCurrentFrame}
+                            changeCurrentFrame={changeCurrentFrame}
                             mainVideoId={mainVideoId}
-                            mainVideoEle={mainVideoEle} />
+                            mainVideoEle={mainVideoEle}
+                            fps={fps}
+                            totalFrame={totalFrame} />
                     </div>
                     {/* タグフォーム */}
                     <div className={classes.tagWrap} >
@@ -377,7 +409,8 @@ export const Video = () => {
                             setIsCreatingTag={setIsCreatingTag}
                             changeCurrentFrame={changeCurrentFrame}
                             storyVideo={storyVideo}
-                            mainVideoId={mainVideoId} />
+                            mainVideoId={mainVideoId}
+                            totalFrame={totalFrame} />
                     </div>
                 </>
             }

@@ -7,9 +7,6 @@ export const TagElement = (props) => {
 
     const mainCanvas = document.getElementsByTagName('canvas')[0];
 
-    const phi = THREE.Math.degToRad( props.lat );
-    const theta = THREE.Math.degToRad( props.lon );
-
     const style = (props.three_dimensional_flg)
         ? {
             width: props.tag.width + '%',

@@ -41,8 +41,18 @@ export const TagForm = (props) => {
      */
     const handleChange = (e) => {
         var value;
-        switch (e.target.type) {
-            case "file":
+        switch (e.target.name) {
+            case "display_frame":
+                value = (e.target.value < 0) ? 0 : e.target.value;
+                props.changeCurrentFrame(value);
+                break;
+
+            case "hide_frame":
+                value = (props.totalFrame < e.target.value) ? props.totalFrame : e.target.value;
+                props.changeCurrentFrame(value);
+                break;
+
+            case "popup_img":
                 value = e.target.files[0];
                 break;
         
@@ -64,15 +74,6 @@ export const TagForm = (props) => {
         e.preventDefault();
         props.changeCurrentFrame(props.newTagEleState.display_frame);
         props.createTagArea(e);
-    }
-
-    /**
-     *フォームのフレーム変更時イベント
-     * @param {onChange} e
-     */
-    const handleChangeFrame = (e) => {
-        props.changeCurrentFrame(e.target.value);
-        handleChange(e);
     }
 
     // タグタイプ毎に入力フォーム変更
@@ -218,9 +219,9 @@ export const TagForm = (props) => {
                         </div>
                         { renderTagTypeCol() }
                         <label htmlFor='display-frame'>開始フレーム</label>
-                        <input id='display-frame' className={classes.inputText} type='number' name='display_frame' value={props.newTagEleState.display_frame} onChange={ (e) => handleChangeFrame(e) } />
+                        <input id='display-frame' className={classes.inputText} type='number' name='display_frame' value={props.newTagEleState.display_frame} onChange={ (e) => handleChange(e) } />
                         <label htmlFor='hide-frame'>終了フレーム</label>
-                        <input id='hide-frame' className={classes.inputText} type='number' name='hide_frame' value={props.newTagEleState.hide_frame} onChange={ (e) => handleChangeFrame(e) } />
+                        <input id='hide-frame' className={classes.inputText} type='number' name='hide_frame' value={props.newTagEleState.hide_frame} onChange={ (e) => handleChange(e) } />
                         <button onClick={ (e) => handleSubmit(e) }>登録</button>
                     </form>
                 

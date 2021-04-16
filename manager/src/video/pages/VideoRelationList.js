@@ -20,9 +20,10 @@ export const VideoRelationList = () => {
     const[videoRelation, setVideoRelation] = useState(initialState);
     const[loading, setLoading] = useState(true);
     const { projectId } = useParams();
+    const decryptedProjectId = getDecryptedString(projectId)
 
     useEffect(() => {
-        getVideoRelation(getDecryptedString(projectId))
+        getVideoRelation(decryptedProjectId)
         .then(vr => {
             setVideoRelation(vr);
             setLoading(false);
@@ -47,7 +48,7 @@ export const VideoRelationList = () => {
                         <div className={classes.contentWrap}>
                             {videoRelation.map( vr => <VideoRelationContent key={ vr.id } {...vr} videoRelation={videoRelation} setVideoRelation={ setVideoRelation } /> )}
                         </div>
-                        <VideoRelationForm projectId={ projectId } setVideoRelation={ setVideoRelation } videoRelation={videoRelation} />
+                        <VideoRelationForm projectId={ decryptedProjectId } setVideoRelation={ setVideoRelation } videoRelation={videoRelation} />
                     </div>
                 </div>
             }

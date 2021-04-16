@@ -35,12 +35,12 @@ const Cube = React.memo(props => {
 
     const mainVideoFlg = (props.id === props.mainVideoId);
 
-    const [onMouseDownMouseX, setOnMouseDownMouseX] = useState(0);
-    const [onMouseDownMouseY, setOnMouseDownMouseY] = useState(0);
-    const [onMouseDownLon, setOnMouseDownLon] = useState(0);
-    const [onMouseDownLat, setOnMouseDownLat] = useState(0);
+    const [onPointerDownPointerX, setOnPointerDownPointerX] = useState(0);
+    const [onPointerDownPointerY, setOnPointerDownPointerY] = useState(0);
+    const [onPointerDownLon, setOnPointerDownLon] = useState(0);
+    const [onPointerDownLat, setOnPointerDownLat] = useState(0);
 
-    const [isMouseDown, setIsMouseDown] = useState(false);
+    const [isPointerDown, setIsPointerDown] = useState(false);
 
     const { size } = useThree();
 
@@ -55,7 +55,11 @@ const Cube = React.memo(props => {
                 props.setMainVideoId(Number(vid.id));
                 props.setMainVideoEle(vid);
                 props.setIsLoadingVideo(false);
+                props.setTotalFrame(Math.ceil(vid.duration * props.fps));
             }
+        })
+        vid.addEventListener('ended', () => {
+            props.setIsPlay(false);
         })
         return vid;
     })
@@ -66,23 +70,24 @@ const Cube = React.memo(props => {
 
     /**
      *動画角度変更時マウスダウンイベント
-     * @param {MouseEvent} e
+     * @param {PointerEvent} e
      */
-    const mousedown = (e) => {
-        setOnMouseDownMouseX(e.offsetX);
-        setOnMouseDownMouseY(e.offsetY);
-        setOnMouseDownLon(props.lon);
-        setOnMouseDownLat(props.lat);
+    const pointerdown = (e) => {
+        setOnPointerDownPointerX(e.offsetX);
+        setOnPointerDownPointerY(e.offsetY);
+        setOnPointerDownLon(props.lon);
+        setOnPointerDownLat(props.lat);
         props.setCanMove(true);
+        e.target.setPointerCapture(e.pointerId);
     }
 
     /**
      *動画角度変更時マウスMOVEイベント
-     * @param {MouseEvent} e
+     * @param {PointerEvent} e
      */
-    const mouseMove = (e) => {
-        props.setLon(( e.offsetX - onMouseDownMouseX ) * -0.25 + onMouseDownLon);
-        props.setLat(Math.max( 37.5, Math.min( 142.5, ( e.offsetY - onMouseDownMouseY ) * 0.25 + onMouseDownLat) ) );
+    const pointerMove = (e) => {
+        props.setLon(( e.offsetX - onPointerDownPointerX ) * -0.25 + onPointerDownLon);
+        props.setLat(Math.max( 37.5, Math.min( 142.5, ( e.offsetY - onPointerDownPointerY ) * 0.25 + onPointerDownLat) ) );
         const phi = THREE.Math.degToRad( props.lat );
         const theta = THREE.Math.degToRad( props.lon );
         e.camera.position.x = Math.sin( phi ) * Math.cos( theta );
@@ -93,36 +98,42 @@ const Cube = React.memo(props => {
 
     /**
      *動画角度変更時マウスアップイベント
-     * @param {MouseEvent} e
+     * @param {PointerEvent} e
      */
-    const mouseUp = (e) => {
+    const pointerUp = (e) => {
         props.setCanMove(false);
+        e.target.releasePointerCapture(e.pointerId);
     }
 
     /**
      *領域指定ボタン押下後のマウスダウンイベント
      *タグの大きさ、場所を設定
-     * @param {MouseEvent} e
+     * @param {PointerEvent} e
      */
-    const createTagMouseDown = (e) => {
-        setIsMouseDown(true);
+    const createTagPointerDown = (e) => {
+        setIsPointerDown(true);
         props.setCreatingTagState({
             ...props.creatingTagState,
             startX: e.offsetX,
             startY: e.offsetY,
         });
+        e.target.setPointerCapture(e.pointerId);
     };
 
     /**
-     *タグ作成時、MOUSEDOWN後のMOUSEMOVEイベント
-     * @param {MouseEvent} e
+     *タグ作成時、PointerDOWN後のPointerMOVEイベント
+     * @param {PointerEvent} e
      */
-    const createTagMouseMove = (e) => {
+    const createTagPointerMove = (e) => {
         // px単位で管理するとwindowサイズにより、相違が生まれるため％で管理
-        const width = (Math.max(e.offsetX, props.creatingTagState.startX) - Math.min(e.offsetX, props.creatingTagState.startX)) / size.width * 100;
-        const height = (Math.max(e.offsetY, props.creatingTagState.startY) - Math.min(e.offsetY, props.creatingTagState.startY)) / size.height * 100;
-        const left = Math.min(props.creatingTagState.startX, e.offsetX) / size.width * 100;
-        const top = Math.min(props.creatingTagState.startY, e.offsetY) / size.height * 100;
+        const adjustmentLeft = Math.max(0, Math.min(props.creatingTagState.startX, e.offsetX));
+        const adjustmentTop = Math.max(0, Math.min(props.creatingTagState.startY, e.offsetY));
+        const adjustmentRight = Math.min(size.width, Math.max(props.creatingTagState.startX, e.offsetX));
+        const adjustmentBottom = Math.min(size.height, Math.max(props.creatingTagState.startY, e.offsetY));
+        const width = (adjustmentRight - adjustmentLeft) / size.width * 100;
+        const height = (adjustmentBottom - adjustmentTop) / size.height * 100;
+        const left = adjustmentLeft / size.width * 100;
+        const top = adjustmentTop / size.height * 100;
         // 既存のタグ修正時
         if(props.creatingTagState.id !== -1){
             const newVideo = [...props.all_video];
@@ -154,20 +165,21 @@ const Cube = React.memo(props => {
     /**
      *領域指定ボタン押下後のマウスアップイベント
      *タグの大きさ、場所を設定(%)
-     * @param {MouseEvent} e
+     * @param {PointerEvent} e
      */
-    const createTagMouseUp = (e) => {
+    const createTagPointerUp = (e) => {
         props.setIsCreatingTag(false);
-        setIsMouseDown(false);
+        setIsPointerDown(false);
+        e.target.releasePointerCapture(e.pointerId);
     }
 
     return (
         <mesh
             ref={mesh}
             scale={[1, 1, 1]}
-            onPointerDown={(props.isCreatingTag) ? (e) => createTagMouseDown(e) : (e) => mousedown(e)}
-            onPointerMove={(props.canMove) ? (e) => mouseMove(e) : (isMouseDown) ? (e) => createTagMouseMove(e) : undefined}
-            onPointerUp={(props.canMove) ? (e) => mouseUp(e) : (isMouseDown) ? (e) => createTagMouseUp(e) : undefined} >
+            onPointerDown={(props.isCreatingTag) ? (e) => createTagPointerDown(e) : (e) => pointerdown(e)}
+            onPointerMove={(props.canMove) ? (e) => pointerMove(e) : (isPointerDown) ? (e) => createTagPointerMove(e) : undefined}
+            onPointerUp={(props.canMove) ? (e) => pointerUp(e) : (isPointerDown) ? (e) => createTagPointerUp(e) : undefined} >
             <sphereBufferGeometry attach="geometry" args={[1000, 30, 30]} />
             <meshBasicMaterial side={THREE.BackSide} >
                 <videoTexture attach="map" args={[video]} />

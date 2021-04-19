@@ -180,7 +180,7 @@ export const Video = () => {
      */
     const renderTagElement = () => {
         return video.map(v => v.tags.map(t => {
-            if((t.display_frame <= currentFrame) && (currentFrame <= t.hide_frame)){
+            if((t.display_frame <= currentFrame) && (currentFrame <= t.hide_frame) && (v.id === mainVideoId)){
                 return (
                     <TagElement
                         key={t.id}

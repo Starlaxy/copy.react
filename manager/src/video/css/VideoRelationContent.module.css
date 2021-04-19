@@ -17,6 +17,7 @@
 .editIcon, .deleteIcon {
     height: 19px;
     width: 19px;
+    cursor: pointer;
 }
 
 .editIcon {

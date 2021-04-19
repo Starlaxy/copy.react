@@ -12,6 +12,14 @@ const toJson = async (res) => {
     }
 }
 
+// ビデオ取得（ストーリービデオも取得）
+export const getRelatedVideo = async (videoRelationId) => {
+    const res = await fetch(API_VIDEORELATION_ROOT + videoRelationId + config.API_VIDEO_ACTION.GET_RELATED_VIDEO, {
+        method: 'GET',
+    })
+    return await toJson(res);
+}
+
 // ビデオ取得
 export const getVideo = async (videoRelationId) => {
     const res = await fetch(API_VIDEO_ROOT + videoRelationId + config.API_VIDEO_ACTION.GET_FROM_VIDEORELATION, {

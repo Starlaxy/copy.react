@@ -3,6 +3,7 @@
     height: 19px;
     width: 19px;
     margin-left: 10px;
+    cursor: pointer;
 }
 
 .caption {
@@ -26,4 +27,5 @@
 
 .deleteIcon {
     margin: 0 0 0 auto;
+    cursor: pointer;
 }

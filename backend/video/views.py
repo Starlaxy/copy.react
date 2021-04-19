@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from .models import VideoRelation, Video, Tag, EndTag
+from project.models import Project
 from .serializers import *
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
@@ -31,12 +32,34 @@ class VideoRelationViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def get_story_video(self, request, pk=None):
         """
-        プロジェクトIDからVideoRelation取得
+        VideoRelationIDからプロジェクトに紐づくVideoRelationID以外のVideoRelation取得
         """
         videorelation = VideoRelation.objects.get(pk=pk)
         story_video = VideoRelation.objects.filter(Q(project_id=videorelation.project_id) & ~Q(id=videorelation.id))
         serializers = VideoRelationSerializer(story_video, many=True)
         return Response(serializers.data)
+
+    @action(detail=True, methods=['get'])
+    def get_related_video(self, request, pk=None):
+        """
+        再生するビデオと紐づくストーリービデオ取得
+        """
+        idlist = [pk]
+        videorelation_ids = self.get_videorelation_ids(pk, idlist)
+        videorelation = VideoRelation.objects.filter(pk__in=videorelation_ids)
+        serializers = VideoRelationSerializer(videorelation, many=True)
+        return Response(serializers.data)
+
+    def get_videorelation_ids(self, pk, idlist):
+        videorelation = VideoRelation.objects.get(pk=pk)
+        videos = Video.objects.filter(video_relation=videorelation)
+        for video in videos:
+            tags = Tag.objects.filter(Q(video=video) & Q(action_type="story"))
+            if(tags.count() != 0):
+                for tag in tags:
+                    idlist.append(tag.story_next_video.pk)
+                    self.get_videorelation_ids(tag.story_next_video.pk, idlist)
+        return idlist
 
     def create(self, request):
         """
@@ -50,8 +73,6 @@ class VideoRelationViewSet(viewsets.ModelViewSet):
             videos = request.data.getlist('video')
             three_dimensional_flags = request.data.getlist('three_dimensional_flg')
             thumb_flg = True
-
-            print('hogehoge')
 
             # video登録数分ループ
             for index, video in enumerate(videos):

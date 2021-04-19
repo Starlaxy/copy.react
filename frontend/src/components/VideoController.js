@@ -6,10 +6,10 @@ import StopIcon from '../images/stop_btn.png'
 import classes from  '../css/VideoController.module.css'
 
 export const VideoController = (props) => {
-
-    const totalFrame = (props.mainVideoEle.duration * 30) | 0;
+    
     const [intervalId, setIntarvalId] = useState(0);
-    const fps = 30;
+
+    const [isMouseDown, setIsMouseDown] = useState(false);
 
     const style = {
         left: (props.mainVideoEle.currentTime / props.mainVideoEle.duration) * 100 + '%'
@@ -19,9 +19,9 @@ export const VideoController = (props) => {
     useEffect(() => {
         if(props.isPlay){
             var id = setInterval(() => {
-                props.setCurrentFrame(props.mainVideoEle.currentTime * fps);
+                props.setCurrentFrame(props.mainVideoEle.currentTime * props.fps);
                 return () => clearInterval(id);
-            }, fps);
+            }, props.fps);
             setIntarvalId(id);
         }
         else{
@@ -52,10 +52,43 @@ export const VideoController = (props) => {
         return ("0" + minute).slice(-2) + ":" + ("0" + seconds).slice(-2);
     }
 
+    /**
+     *seekbarマウスダウン時currentFrame変更
+     * @param {MouseEvent} e
+     */
+     const seekbarMouseDown = (e) => {
+        setIsMouseDown(true);
+        const frame = props.totalFrame / (e.target.clientWidth / e.nativeEvent.offsetX);
+        props.changeCurrentFrame(frame);
+        e.target.setPointerCapture(e.pointerId);
+    }
+
+    /**
+     *seekbarマウスダウン後MouseMoveでcurrentFrame変更
+     * @param {MouseEvent} e
+     */
+    const seekbarMouseMove = (e) => {
+        const adjustmentWidth = Math.max(Math.min(e.target.clientWidth, e.nativeEvent.offsetX), 0);
+        const frame = props.totalFrame / (e.target.clientWidth / adjustmentWidth);
+        props.changeCurrentFrame(frame);
+    }
+
+    /**
+     *マウスアップでMouseDown/MouseMoveイベント無効化
+     */
+    const seekbarMouseUp = (e) => {
+        setIsMouseDown(false);
+        e.target.releasePointerCapture(e.pointerId);
+    }
+
     return(
         <div className={classes.controller}>
             <img src={props.isPlay ? StopIcon : PlayIcon} alt='再生アイコン' onClick={() => switchPlay()} className={classes.playIcon} />
-            <div className={classes.seekbar}>
+            <div 
+                onPointerDown={(e) => seekbarMouseDown(e)}
+                onPointerMove={(isMouseDown) ? (e) => seekbarMouseMove(e) : undefined}
+                onPointerUp={(isMouseDown) ? (e) => seekbarMouseUp(e) : undefined}
+                className={classes.seekbar}>
                 <div className={classes.seekbarTotal}></div>
                 <div className={classes.seekbarNow} style={style} ></div>
             </div>
@@ -63,11 +96,6 @@ export const VideoController = (props) => {
                 <div className={classes.currrentTime}>{secondsToTime(props.mainVideoEle.currentTime)}</div>
                 <div>/</div>
                 <div className={classes.duration}>{secondsToTime(props.mainVideoEle.duration)}</div>
-            </div>
-            <div className={classes.frame}>
-                <div className={classes.currentFrame}>{Math.ceil(props.currentFrame)}</div>
-                <div>/</div>
-                <div className={classes.totalFrame}>{totalFrame}</div>
             </div>
         </div>
     )

@@ -1,0 +1,38 @@
+/* ビデオ要素全体 */
+.videoContents {
+    position: relative;
+    overflow: hidden;
+}
+
+/* ロード画面 */
+.loadingDataLayer {
+    width: 100%;
+    height: calc(100% - 12vh);
+    position: absolute;
+    top: 6vh;
+    left: 0;
+    background-color: #F4F6F9;
+    z-index: 20;
+    text-align: center;
+}
+
+.loadingLayer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #F4F6F9;
+    z-index: 20;
+    text-align: center;
+}
+
+.loadingText {
+    font-size: 120%;
+    font-weight: bold;
+    color: #073B67;
+}
+
+.hideVideo {
+    display: none;
+}

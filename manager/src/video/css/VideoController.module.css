@@ -38,6 +38,10 @@
     margin-left: 10px;
 }
 
+.frame {
+    margin-right: 10px;
+}
+
 .currentTime, .duration, .currentFrame, .totalFrame {
     width: 40px;
     text-align: end;

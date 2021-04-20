@@ -12,6 +12,8 @@ import { PopupContent } from '../components/PopupContent'
 import { StoryLayer } from '../components/StoryLayer'
 import { initialVideoState, initialTagState, initialCreatingTagState } from '../components/InitialState'
 import { getVideo, getStoryVideo } from '../api/video';
+import { deleteTag } from '../api/tag';
+import { Confirm } from '../../common/components/Confirm'
 
 import { getDecryptedString } from '../../common/components/Crypto'
 
@@ -69,6 +71,10 @@ export const Video = () => {
     const [canMove, setCanMove] = useState(false);
     const [lon, setLon] = useState(0);
     const [lat, setLat] = useState(90);
+
+    // タグ削除時のConfirmModal表示フラグ
+    const [isShowConfirmModal, setIsConfirmModal] = useState(false);
+    const [deleteTagInfo, setDeleteTagInfo] = useState({id: 0, title: ''});
 
     // VideoRelationに紐づくVideo、Tag情報取得
     useEffect(() => {
@@ -202,8 +208,8 @@ export const Video = () => {
      * @param {*} e
      */
      const handleChangeTagForm = (e, id, videoId) => {
-        var newVideo = [...video]
-        var value;
+        let newVideo = [...video]
+        let value;
         switch (e.target.name) {
             case "display_frame":
                 value = (e.target.value < 0) ? 0 : e.target.value;
@@ -293,7 +299,8 @@ export const Video = () => {
                     storyVideo={storyVideo}
                     setMainVideoId={setMainVideoId}
                     player={player}
-                    setMainVideoEle={setMainVideoEle} />
+                    setMainVideoEle={setMainVideoEle}
+                    showConfirmModal={showConfirmModal} />
             )
         )
     }
@@ -351,6 +358,47 @@ export const Video = () => {
         });
     }
 
+    /**
+     *タグ削除ボタン押下イベント
+     * @param {onClick} e
+     */
+     const handleDeleteTag = () => {
+        deleteTag(deleteTagInfo.id)
+        .then(t => {
+            let newVideo = [...video];
+            newVideo.map(nv => {
+                nv.tags = nv.tags.filter(nt => nt.id !== deleteTagInfo.id)
+            });
+            setVideo(newVideo);
+            setIsConfirmModal(false);
+        })
+        .catch(e => {
+            throw new Error(e);
+        });
+    }
+
+    /**
+     *isShowConfirmModal true時にConfirmComponent表示
+     * @return {JSX} ConfirmComponent
+     */
+     const renderConfirmModal = () => {
+        if(isShowConfirmModal){
+            const confirmTitle = `${deleteTagInfo.title}削除`;
+            const confirmDesc = `「${deleteTagInfo.title}」を削除します。\nよろしいですか？`;
+            return <Confirm title={confirmTitle} description={confirmDesc} confirmEvent={handleDeleteTag} setIsConfirmModal={setIsConfirmModal} /> 
+        }
+    }
+
+    /**
+     *ConfirmComponent表示フラグTrue切り替え
+     * @param {MouseEvent} e
+     */
+    const showConfirmModal = (e, id, title) => {
+        e.preventDefault();
+        setDeleteTagInfo({id: id, title: title});
+        setIsConfirmModal(true);
+    }
+
     return(
         <>
             { isLoadingData
@@ -361,6 +409,7 @@ export const Video = () => {
                 </div>
                 :
                 <>
+                    {renderConfirmModal()}
                     <div className={classes.videoPlayer}>
                         {isLoadingVideo &&
                             <div className={classes.loadingLayer}>

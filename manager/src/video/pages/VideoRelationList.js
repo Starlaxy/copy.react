@@ -42,15 +42,13 @@ export const VideoRelationList = () => {
                     <p className={classes.loadingText}>Loading...</p>
                 </div>
                 :
-                <div key='videoRelation' id="contents">
-                    <div>
-                        <h2 className={classes.title}>ビデオ一覧</h2>
-                        <div className={classes.contentWrap}>
-                            {videoRelation.map( vr => <VideoRelationContent key={ vr.id } {...vr} videoRelation={videoRelation} setVideoRelation={ setVideoRelation } /> )}
-                        </div>
-                        <VideoRelationForm projectId={ decryptedProjectId } setVideoRelation={ setVideoRelation } videoRelation={videoRelation} />
+                <>
+                    <h2 className={classes.title}>ビデオ一覧</h2>
+                    <div className={classes.contentWrap}>
+                        {videoRelation.map( vr => <VideoRelationContent key={ vr.id } {...vr} videoRelation={videoRelation} setVideoRelation={ setVideoRelation } /> )}
                     </div>
-                </div>
+                    <VideoRelationForm projectId={ decryptedProjectId } setVideoRelation={ setVideoRelation } videoRelation={videoRelation} />
+                </>
             }
         </>
     )

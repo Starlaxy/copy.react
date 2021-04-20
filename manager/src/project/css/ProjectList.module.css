@@ -5,6 +5,10 @@
     padding: 20px 0;
 }
 
+.projectWrap {
+    margin: 0 20px;
+}
+
 /* ロード画面 */
 .loadingLayer {
     width: 100%;

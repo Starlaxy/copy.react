@@ -74,7 +74,7 @@ export const VideoRelationForm = (props) => {
     }
 
     const handleChange = (target, e) => {
-        var newVideo = [...video];
+        let newVideo = [...video];
         if(e.target.name === 'video'){
             newVideo.find(v => v===target).video = e.target.files[0];
         }
@@ -84,30 +84,59 @@ export const VideoRelationForm = (props) => {
         setVideo(newVideo);
     }
 
+    const renderDeletebtn = (index) => {
+        if(1 < video.length){
+            return (
+                <div key={index}>
+                    <button key={index} onClick={(e) => handleDelete(e, index)} className={classes.deleteBtn}>削除</button>
+                </div>
+            )
+        }
+    }
+
+    /**
+     *追加した動画削除
+     * @param {*} index
+     */
+    const handleDelete = (e, index) => {
+        e.preventDefault();
+        let videos = [...video];
+        videos.splice(index, 1);
+
+        setVideo(videos);
+    }
+
     return(
         <Transition nodeRef={nodeRef} in={mount} timeout={1000} >
             {(state) =>
                 <div ref={nodeRef}>
-                    <button className={classes.displayFormBtn} onClick={ (e) => handleDisplay(e) } style={transitionStyle[state]}>{ mount ? '閉じる' : '追加' }</button>
+                    <div className={classes.displayFormBtnWrap} onClick={ (e) => handleDisplay(e) } style={transitionStyle[state]}>
+                        <p className={classes.displayFormBtn}>{ mount ? '閉じる' : '追加' }</p>
+                    </div>
                     <form className={classes.addForm} style={transitionStyle[state]}>
-                        <label>
-                            タイトル:
-                            <input type="text" name="title" value={ title } onChange={ (e) => setTitle(e.target.value) } />
-                        </label>
+                        <div className={classes.inputCol}>
+                            <label>タイトル</label>
+                            <input className={classes.inputText} type="text" name="title" value={ title } onChange={ (e) => setTitle(e.target.value) } />
+                        </div>
                         {video.map((v, index) => (
                             <Fragment key={index}>
-                                <label>
-                                    動画:
+                                <div className={classes.inputCol}>
+                                    <label>動画</label>
                                     <input type="file" name="video" accept='video/*' alt="動画" onChange={ (e) => handleChange(v, e) } ref={videoInput} />
-                                </label>
-                                <label>
-                                    360度動画:
+                                </div>
+                                <div className={classes.inputCheck}>
+                                    <label>360度動画</label>
                                     <input type="checkbox" name="three_dimensional_flg" onChange={ (e) => handleChange(v, e) } checked={v.three_dimensional_flg} />
-                                </label>
+                                </div>
+                                {renderDeletebtn(index)}
                             </Fragment>
                         ))}
-                        <button onClick={ (e) => AddForm(e) }>追加</button>
-                        <button onClick={ handleSubmit }>送信</button>
+                        <div className={classes.addBtnWrap}>
+                            <button onClick={(e) => AddForm(e)} className={classes.addBtn}>動画追加</button>
+                        </div>
+                        <div className={classes.submitBtnWrap}>
+                            <button onClick={handleSubmit} className={classes.submitBtn}>送信</button>
+                        </div>
                     </form>
                 </div>
             }

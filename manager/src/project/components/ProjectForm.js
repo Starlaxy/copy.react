@@ -64,17 +64,21 @@ export const ProjectForm = (props) => {
         <Transition nodeRef={nodeRef} in={mount} timeout={1000} >
             {(state) =>
                 <div ref={nodeRef}>
-                    <button className={classes.displayFormBtn} onClick={ (e) => handleDisplay(e) } style={transitionStyle[state]}>{ mount ? '閉じる' : '追加' }</button>
+                    <div className={classes.displayFormBtnWrap} style={transitionStyle[state]} onClick={ (e) => handleDisplay(e) }>
+                        <p className={classes.displayFormBtn}>{ mount ? '閉じる' : '追加' }</p>
+                    </div>
                     <form className={classes.addForm} style={transitionStyle[state]}>
-                        <label>
-                            title:
+                        <div className={classes.inputCol}>
+                            <label>タイトル</label>
                             <input type='text' name='title' value={project.title} onChange={handleChange} />
-                        </label>
-                        <label>
-                            description:
+                        </div>
+                        <div className={classes.inputCol}>
+                            <label>詳細</label>
                             <input type='text' name='description' value={project.description} onChange={handleChange} />
-                        </label>
-                        <button onClick={handleSubmit}>送信</button>
+                        </div>
+                        <div className={classes.submitBtnWrap}>
+                            <button onClick={handleSubmit} className={classes.submitBtn}>送信</button>
+                        </div>
                     </form>
                 </div>
             }

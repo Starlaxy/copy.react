@@ -38,7 +38,7 @@ export const VideoRelationContent = (props) => {
         updateTitle(props.id, data)
         .then(vr => {
             // 親のState変更
-            var newVideoRelation = [...props.videoRelation];
+            let newVideoRelation = [...props.videoRelation];
             newVideoRelation.find(nvr => nvr.id === vr.id).title = vr.title
             props.setVideoRelation(newVideoRelation);
         })
@@ -75,9 +75,10 @@ export const VideoRelationContent = (props) => {
     const handleDelete = (e) => {
         deleteVideoRelation(props.id)
         .then(p => {
-            var newVideoRelation = [...props.videoRelation];
+            let newVideoRelation = [...props.videoRelation];
             newVideoRelation = newVideoRelation.filter(nvr => nvr.id !== props.id);
             props.setVideoRelation(newVideoRelation);
+            setIsConfirmModal(false);
         })
         .catch(e => {
             throw new Error(e);

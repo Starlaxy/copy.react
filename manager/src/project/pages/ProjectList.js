@@ -39,7 +39,7 @@ export const ProjectList = () => {
                     <p className={classes.loadingText}>Loading...</p>
                 </div>
                 :
-                <div>
+                <div className={classes.projectWrap}>
                     <h2 className={ classes.h2 }>プロジェクト一覧</h2>
                     {project.map( p => <ProjectContent {...p} setProject={ setProject } project={project} key={p.id} /> )}
                     <ProjectForm setProject={ setProject } project={project} />

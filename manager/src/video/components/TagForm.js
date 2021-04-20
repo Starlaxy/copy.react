@@ -40,7 +40,7 @@ export const TagForm = (props) => {
      * @param {onChange} e
      */
     const handleChange = (e) => {
-        var value;
+        let value;
         switch (e.target.name) {
             case "display_frame":
                 value = (e.target.value < 0) ? 0 : e.target.value;
@@ -188,7 +188,7 @@ export const TagForm = (props) => {
 
         createTag(formData)
         .then(t => {
-            var newVideo = [...props.video];
+            let newVideo = [...props.video];
             newVideo.find(v => v.id === props.mainVideoId).tags.push(t);
             props.setVideo(newVideo);
             props.setIsCreatingTag(false);
@@ -208,7 +208,7 @@ export const TagForm = (props) => {
                         <label htmlFor='title'>タイトル</label>
                         <input id='title' className={classes.inputText} type='text' name='title' value={props.newTagEleState.title} onChange={ (e) => handleChange(e) } />
                         <button className={classes.createAreaBtn} onClick={(e) => handleClickAreaBtn(e)}>領域指定</button>
-                        <p>タグタイプ</p>
+                        <p className={classes.inputColText}>タグタイプ</p>
                         <div className={classes.radioWrap}>
                             <label htmlFor='link' className={`${classes.radioLabel} ${(props.newTagEleState.action_type === 'link') ? classes.radioChecked : ''}`}>外部リンク</label>
                             <input id='link' className={classes.radioInput} type='radio' name='action_type' value='link' onChange={ (e) => handleChange(e) } checked={props.newTagEleState.action_type === 'link'} />
@@ -222,7 +222,9 @@ export const TagForm = (props) => {
                         <input id='display-frame' className={classes.inputText} type='number' name='display_frame' value={props.newTagEleState.display_frame} onChange={ (e) => handleChange(e) } />
                         <label htmlFor='hide-frame'>終了フレーム</label>
                         <input id='hide-frame' className={classes.inputText} type='number' name='hide_frame' value={props.newTagEleState.hide_frame} onChange={ (e) => handleChange(e) } />
-                        <button onClick={ (e) => handleSubmit(e) }>登録</button>
+                        <div className={classes.submitBtnWrap}>
+                            <button className={classes.submitBtn} onClick={ (e) => handleSubmit(e) }>登録</button>
+                        </div>
                     </form>
                 
                 }

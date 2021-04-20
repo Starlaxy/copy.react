@@ -15,7 +15,7 @@
 .inputText {
     background-color: white;
     color: black;
-    margin: 0 10px;
+    margin: 0 20px;
     border-radius: 5px;
     padding: 5px;
     font-size: 80%;
@@ -37,13 +37,15 @@
     width: 30%;
     padding: 5px 10px;
     text-align: center;
-    margin: 5px;
+    margin: 10px 0 10px 20px;
     border-radius: 5px;
     border: 1px solid white;
 }
 
 .radioWrap {
-    margin: 10px;
+    margin: 5px 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .radioInput{
@@ -63,4 +65,23 @@
 
 .radioChecked {
     background-color: #F8B500;
+}
+
+.inputColText {
+    margin: 5px 20px;
+}
+
+.submitBtnWrap {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.submitBtn {
+    margin-right: 20px;
+    padding: 5px 20px;
+    background-color: #073B67;
+}
+
+.submitBtn:hover {
+    background-color: #EDA934;
 }

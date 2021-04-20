@@ -1,17 +1,26 @@
 /* ProjectContent */
-.img {
-    height: 19px;
-    width: 19px;
-    margin-left: 10px;
+.editImg {
+    height: 18px;
+    width: 18px;
+    margin-left: 15px;
+    cursor: pointer;
+    padding: 1px;
+}
+
+.deleteImg {
+    height: 20px;
+    width: 20px;
+    margin: auto 20px 10px auto;
     cursor: pointer;
 }
 
 .caption {
     display: flex;
+    margin-bottom: 5px;
 }
 
 .project {
-    display: block;
+    display: flex;
     text-decoration: none;
     border-top: 1px solid #b8b8b8;
     padding: 10px 0;
@@ -22,10 +31,9 @@
 }
 
 .title, .description {
-    padding: 5px;
+    padding: 5px 0;
 }
 
-.deleteIcon {
-    margin: 0 0 0 auto;
-    cursor: pointer;
+.col {
+    margin: 10px;
 }

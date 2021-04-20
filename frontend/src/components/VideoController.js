@@ -18,7 +18,7 @@ export const VideoController = (props) => {
     // frame上昇
     useEffect(() => {
         if(props.isPlay){
-            var id = setInterval(() => {
+            let id = setInterval(() => {
                 props.setCurrentFrame(props.mainVideoEle.currentTime * props.fps);
                 return () => clearInterval(id);
             }, props.fps);
@@ -47,8 +47,8 @@ export const VideoController = (props) => {
      * @return {string} 分:秒    
      */
     const secondsToTime = (time) => {
-        var minute = Math.floor(time / 60 | 0);
-        var seconds = Math.floor(time % 60);
+        let minute = Math.floor(time / 60 | 0);
+        let seconds = Math.floor(time % 60);
         return ("0" + minute).slice(-2) + ":" + ("0" + seconds).slice(-2);
     }
 

@@ -1,24 +1,101 @@
-.displayFormBtn {
+.displayFormBtnWrap {
     width: 50px;
     height: 12vh;
     position: absolute;
     top: 8%;
     right: 0;
-    text-align: center;
     background-color: #8497B0;
     border-radius: 10px 0 0 10px;
     color: white;
     opacity: 0.9;
+    cursor: pointer;
+    text-align: center;
+}
+
+.displayFormBtnWrap:hover {
+    background-color: #EDA934;
+}
+
+.displayFormBtn {
+    writing-mode: vertical-rl;
+    width: 100%;
+    height: 100%;
+    padding-right: 25%;
 }
 
 .addForm {
     width: 400px;
     right: -400px;
-    height: 100%;
+    height: calc(100% - 12vh);
     color: white;
     background-color: #8497B0;
     opacity: 0.9;
     position: fixed;
     z-index: 1;
     top: 6%;
+}
+
+.inputCol {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin: 5px 20px;
+}
+
+input {
+    margin: 5px 20px;
+}
+
+.inputText {
+    background-color: white;
+    margin: auto 20px;
+    padding: 5px;
+    border-radius: 5px;
+    color: black;
+}
+
+.inputCheck {
+    margin: 5px 0;
+}
+
+.submitBtnWrap {
+    width: 100%;
+    text-align: center;
+}
+
+.addBtnWrap {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.addBtn {
+    padding: 10px;
+    background-color: #3f6485;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-left: 20px;
+}
+
+.submitBtn {
+    width: 125px;
+    height: 50px;
+    border-radius: 25px;
+    margin-top: 10px;
+    background-color: #073B67;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.addBtn:hover, .submitBtn:hover {
+    background-color: #EDA934;
+}
+
+.deleteBtn {
+    display: block;
+    background-color: rgb(245, 131, 131);
+    margin: 0 20px 0 auto;
+    padding: 5px 10px;
+    border-radius: 5px;
 }

@@ -13,12 +13,14 @@ class App extends Component {
             <div className="App">
                 <Router>
                     <Header />
-                    <Switch>
-                        <Route exact path='/' component={ Top } />
-                        <Route exact path='/projectlist' component={ ProjectList } />
-                        <Route exact path='/videorelationlist/:projectId' component={ VideoRelationList } />
-                        <Route exact path='/video/:videoRelationId' component={ Video } />
-                    </Switch>
+                    <div id='content'>
+                        <Switch>
+                            <Route exact path='/' component={ Top } />
+                            <Route exact path='/projectlist' component={ ProjectList } />
+                            <Route exact path='/videorelationlist/:projectId' component={ VideoRelationList } />
+                            <Route exact path='/video/:videoRelationId' component={ Video } />
+                        </Switch>
+                    </div>
                     <Footer />
                 </Router>
             </div>

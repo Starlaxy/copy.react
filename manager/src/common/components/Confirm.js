@@ -12,7 +12,7 @@ export const Confirm = (props) => {
                     <p className={classes.description}>{props.description}</p>
                 </div>
                 <div className={classes.btnWrap}>
-                    <button className={classes.cancelBtn} onClick={() => props.setIsConfirmModal()}>CANCEL</button>
+                    <button className={classes.cancelBtn} onClick={() => props.setIsConfirmModal(false)}>CANCEL</button>
                     <button className={classes.confirmBtn} onClick={() => props.confirmEvent()}>OK</button>
                 </div>
             </div>

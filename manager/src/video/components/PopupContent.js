@@ -60,7 +60,7 @@ export const PopupContent = (props) => {
      */
     const switchImgSrc = () => {
         if(typeof(props.popup_img) == 'object'){
-            var reader = new FileReader()
+            let reader = new FileReader();
             reader.onload = (e) => {
                 setImgSrc(e.target.result)
             };

@@ -15,7 +15,7 @@
     background-color: white;
     color: black;
     padding: 5px;
-    margin: 0 10px;
+    margin: 0 20px;
     border-radius: 5px;
 }
 
@@ -28,13 +28,13 @@
     width: 30%;
     padding: 5px 10px;
     text-align: center;
-    margin: 5px;
+    margin: 10px 0 10px 20px;
     border-radius: 5px;
     border: 1px solid white;
 }
 
 .radioWrap {
-    margin: 10px;
+    margin: 5px 10px;
     display: flex;
     justify-content: space-between;
 }
@@ -63,4 +63,30 @@
     line-height: 1.4;
     background-color: white;
     color: black;
+}
+
+.inputColText {
+    margin: 5px 20px;
+}
+
+.btnWrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.deleteBtn {
+    padding: 5px 20px;
+    background-color: #F58383;
+    margin-right: 20px;
+}
+
+.submitBtn {
+    padding: 5px 20px;
+    margin-right: 20px;
+    background-color: #073B67;
+}
+
+.submitBtn:hover {
+    background-color: #EDA934;
 }

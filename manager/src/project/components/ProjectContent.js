@@ -41,7 +41,7 @@ export const ProjectContent = (props) => {
             updateTitle(id, data)
             .then(p => {
                 // 親のProjectState変更
-                var newProject = [...props.project];
+                let newProject = [...props.project];
                 newProject.find(np => np.id === p.id).title = p.title
                 props.setProject(newProject);
             })
@@ -58,7 +58,7 @@ export const ProjectContent = (props) => {
             updateDescription(id, data)
             .then(p => {
                 // 親のProjectState変更
-                var newProject = [...props.project];
+                let newProject = [...props.project];
                 newProject.find(np => np.id === p.id).description = p.description
                 props.setProject(newProject);
             })
@@ -124,9 +124,10 @@ export const ProjectContent = (props) => {
      const handleDelete = (e) => {
         deleteProject(props.id)
         .then(p => {
-            var newProject = [...props.project];
+            let newProject = [...props.project];
             newProject = newProject.filter(np => np.id !== props.id);
             props.setProject(newProject);
+            setIsConfirmModal(false);
         })
         .catch(e => {
             throw new Error(e);
@@ -137,22 +138,23 @@ export const ProjectContent = (props) => {
         <>
             {renderConfirmModal()}
             <div className={ classes.project } onClick={ (!isEditTitle && !isEditDescription) ? () => handleClick() : undefined } >
-                <h2>{props.id}</h2>
                 <div>
-                    <div className={ classes.caption }>
-                        <p>タイトル</p>
-                        <img src={ EditIcon } alt='編集アイコン' className={ classes.img } onClick={ (e) => handleChangeTitle(e) } />
+                    <div className={classes.col}>
+                        <div className={ classes.caption }>
+                            <p>タイトル</p>
+                            <img src={ EditIcon } alt='編集アイコン' className={classes.editImg} onClick={ (e) => handleChangeTitle(e) } />
+                        </div>
+                        { renderTitle() }
                     </div>
-                    { renderTitle() }
-                </div>
-                <div>
-                    <div className={ classes.caption }>
-                        <p>詳細</p>
-                        <img src={ EditIcon } alt='編集アイコン' className={ classes.img } onClick={ (e) => handleChangeDescription(e) } />
+                    <div className={classes.col}>
+                        <div className={ classes.caption }>
+                            <p>詳細</p>
+                            <img src={ EditIcon } alt='編集アイコン' className={classes.editImg} onClick={ (e) => handleChangeDescription(e) } />
+                        </div>
+                        { renderDescription() }
                     </div>
-                    { renderDescription() }
                 </div>
-                <img src={ DeleteIcon } alt='削除アイコン' className={ `${classes.img} ${classes.deleteIcon}`  } onClick={ (e) => showConfirmModal(e) } />
+                <img src={ DeleteIcon } alt='削除アイコン' className={classes.deleteImg} onClick={ (e) => showConfirmModal(e) } />
             </div>
         </>
     )

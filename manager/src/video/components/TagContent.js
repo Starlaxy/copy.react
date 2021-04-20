@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { changeTag, deleteTag } from '../api/tag';
+import { changeTag } from '../api/tag';
 import { Transition } from 'react-transition-group';
 
 import classes from  '../css/TagContent.module.css'
@@ -45,7 +45,7 @@ export const TagContent = (props) => {
     const handleClickAreaBtn = (e) => {
         e.preventDefault();
         props.changeCurrentFrame(props.display_frame);
-        props.createTagArea(e, props.id)
+        props.createTagArea(e, props.id);
     }
 
     /**
@@ -74,7 +74,7 @@ export const TagContent = (props) => {
             case 'popup':
                 return (
                     <>
-                        <p>テンプレート選択</p>
+                        <p className={classes.inputColText}>テンプレート選択</p>
                         <div className={classes.radioWrap}>
                             <label htmlFor={"default" + props.id} className={`${classes.radioLabel} ${(props.popup_type === 'default') ? classes.radioChecked : ''}`}>通常</label>
                             <input id={"default" + props.id} className={classes.radioInput} type='radio' name='popup_type' value='default' checked={ props.popup_type === 'default' } onChange={ (e) => handleChange(e) } />
@@ -177,7 +177,7 @@ export const TagContent = (props) => {
 
         changeTag(props.id, formData)
         .then(t => {
-            var newVideo = [...props.all_video];
+            let newVideo = [...props.all_video];
             const targetTags = newVideo.find(v => v.id === t.video).tags;
             // ---------------------------------------------------------------正常に変換されない？
             targetTags.forEach(tt => {
@@ -185,26 +185,6 @@ export const TagContent = (props) => {
                     tt = t
                 }
             })
-            props.setVideo(newVideo);
-        })
-        .catch(e => {
-            throw new Error(e);
-        });
-    }
-
-    /**
-     *タグ削除ボタン押下イベント
-     * @param {onClick} e
-     */
-    const handleDelete = (e) => {
-        e.preventDefault();
-        alert('タグを削除します。\nよろしいですか？');
-        deleteTag(props.id)
-        .then(t => {
-            var newVideo = [...props.all_video];
-            newVideo.map(nv => {
-                nv.tags = nv.tags.filter(nv => nv.id !== props.id)
-            });
             props.setVideo(newVideo);
         })
         .catch(e => {
@@ -220,7 +200,7 @@ export const TagContent = (props) => {
                 {(state) =>
                     <div ref={nodeRef} className={classes.tagCol} style={transitionStyle[state]}>
                         <button className={classes.areaBtn} onClick={(e) => handleClickAreaBtn(e)}>領域指定</button>
-                        <p>タグタイプ</p>
+                        <p className={classes.inputColText}>タグタイプ</p>
                         <div className={classes.radioWrap}>
                             <label htmlFor={"link-tag" + props.id} className={`${classes.radioLabel} ${(props.action_type === 'link') ? classes.radioChecked : ''}`}>外部リンク</label>
                             <input id={"link-tag" + props.id} className={classes.radioInput} type='radio' name='action_type' value='link' checked={ props.action_type === 'link' } onChange={ (e) => handleChange(e) } />
@@ -234,8 +214,10 @@ export const TagContent = (props) => {
                         <input id={"display-frame" + props.id} className={classes.inputText} type='number' name='display_frame' value={ props.display_frame } onChange={ (e) => handleChange(e) } />
                         <label htmlFor={"hide-frame" + props.id}>終了フレーム</label>
                         <input id={"hide-frame" + props.id} className={classes.inputText} type='number' name='hide_frame' value={ props.hide_frame } onChange={ (e) => handleChange(e) } />
-                        <button onClick={ (e) => handleSubmit(e) }>送信</button>
-                        <button onClick={ (e) => handleDelete(e) }>削除</button>
+                        <div className={classes.btnWrap}>
+                            <button className={classes.deleteBtn} onClick={ (e) => props.showConfirmModal(e, props.id, props.title) }>削除</button>
+                            <button className={classes.submitBtn} onClick={ (e) => handleSubmit(e) }>送信</button>
+                        </div>
                     </div>
                 }
             </Transition>

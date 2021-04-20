@@ -30,6 +30,7 @@ export const VideoPlayer = React.memo(props => {
      * @param {videoElement}
      */
     const loadedMetadata = (target) => {
+        target.muted = false;
         props.setIsLoadingVideo(false);
         props.setMainVideoEle(target);
         props.setMainVideoId(Number(target.id))

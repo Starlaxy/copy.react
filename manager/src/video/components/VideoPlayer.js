@@ -36,6 +36,7 @@ export const VideoPlayer = React.memo(props => {
      * @param {videoElement}
      */
     const loadedMetadata = (target) => {
+        target.muted = false;
         props.setMainVideoEle(target);
         props.setIsLoadingVideo(false);
         props.setTotalFrame(Math.ceil(target.duration * props.fps));

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { VideoPlayer } from '../components/VideoPlayer'
+import { ThreeDimVideoPlayer } from '../components/ThreeDimVideoPlayer'
 import { VideoController } from '../components/VideoController'
 import { TagElement } from '../components/TagElement'
 import { PopupContent } from '../components/PopupContent'
@@ -13,6 +14,7 @@ import { getDecryptedString } from '../components/Crypto'
 
 // 画像import
 import LoadingImg from '../images/loading.gif'
+import BackImg from '../images/back_btn.png'
 
 // デザインmodule
 import classes from  '../css/Video.module.css'
@@ -40,6 +42,15 @@ export const Video = () => {
     const [isDisplayPopup, setIsDisplayPopup] = useState(false);
     const [popupTag, setPopupTag] = useState();
 
+    // 360度動画
+    const [lon, setLon] = useState(0);
+    const [lat, setLat] = useState(90);
+    const [isMoveVideo, setIsMoveVideo] = useState(false);
+
+    // story
+    const [isStory, setIsStory] = useState(false);
+    const [storyTransition, setStoryTransition] = useState([]);
+
     // VideoRelationに紐づくVideo、Tag情報取得
     useEffect(() => {
         getRelatedVideo(getDecryptedString(id))
@@ -54,30 +65,64 @@ export const Video = () => {
         })
     }, []);
 
+    // mainVideoIdのVideoElement格納
     useEffect(() => {
-        if(player.find(p=> Number(p.id) === mainVideoId)){
-            setMainVideoEle(player.find(p=> Number(p.id) === mainVideoId));
+        const targetVideo = player.find(p=> Number(p.id) === mainVideoId);
+        if(targetVideo){
+            player.map(p => p.muted = true);
+            setMainVideoEle(targetVideo);
+            targetVideo.muted = false;
         }
-    }, [mainVideoId])
+    }, [mainVideoId]);
 
+    
+    /**
+     *Video描画
+     * @return {JSX} VideoElement 
+     */
     const renderVideo = () => {
         return (
             videoRelation.map(vr => (
                 <div key={vr.id} className={(vr.id !== mainVideoRelationId) ? classes.hideVideo : undefined}>
                     {
-                        vr.videos.map((v, index) => (
-                            <VideoPlayer
-                                key={v.id}
-                                {...v}
-                                index={index}
-                                setIsLoadingVideo={setIsLoadingVideo}
-                                mainVideoId={mainVideoId}
-                                setMainVideoId={setMainVideoId}
-                                player={player}
-                                setMainVideoEle={setMainVideoEle}
-                                setTotalFrame={setTotalFrame}
-                                fps={fps} />
-                        ))
+                        vr.videos.map((v, index) => {
+                            if(v.three_dimensional_flg){
+                                return (
+                                    <ThreeDimVideoPlayer
+                                        key={v.id}
+                                        {...v}
+                                        player={player}
+                                        mainVideoId={mainVideoId}
+                                        setMainVideoId={setMainVideoId}
+                                        lon={lon}
+                                        lat={lat}
+                                        setLon={setLon}
+                                        setLat={setLat}
+                                        isMoveVideo={isMoveVideo}
+                                        setIsMoveVideo={setIsMoveVideo}
+                                        setIsLoadingVideo={setIsLoadingVideo}
+                                        fps={fps}
+                                        setTotalFrame={setTotalFrame}
+                                        setIsPlay={setIsPlay}
+                                        setMainVideoEle={setMainVideoEle} />
+                                )
+                            }
+                            else{
+                                return (
+                                    <VideoPlayer
+                                        key={v.id}
+                                        {...v}
+                                        index={index}
+                                        setIsLoadingVideo={setIsLoadingVideo}
+                                        mainVideoId={mainVideoId}
+                                        setMainVideoId={setMainVideoId}
+                                        player={player}
+                                        setMainVideoEle={setMainVideoEle}
+                                        setTotalFrame={setTotalFrame}
+                                        fps={fps} />
+                                )
+                            }
+                        })
                     }
                 </div>
             ))
@@ -98,10 +143,20 @@ export const Video = () => {
                             tag={t}
                             pauseVideo={pauseVideo}
                             displayPopup={displayPopup}
+                            mainVideoId={mainVideoId}
                             setMainVideoId={setMainVideoId}
                             videoRelation={videoRelation}
+                            mainVideoRelationId={mainVideoRelationId}
                             setMainVideoRelationId={setMainVideoRelationId}
-                            changeCurrentFrame={changeCurrentFrame} />
+                            changeCurrentFrame={changeCurrentFrame}
+                            isMoveVideo={isMoveVideo}
+                            three_dimensional_flg={v.three_dimensional_flg}
+                            lon={lon}
+                            lat={lat}
+                            currentFrame={currentFrame}
+                            setIsStory={setIsStory}
+                            storyTransition={storyTransition}
+                            setStoryTransition={setStoryTransition} />
                     )
                 }
             }))
@@ -155,6 +210,23 @@ export const Video = () => {
         pauseVideo();
     }
 
+    const renderStoryBackImg = () => {
+        if(isStory){
+            return <img className={classes.storyBackImg} src={BackImg} onClick={() => storyBack()} />
+        }
+    }
+
+    const storyBack = () => {
+        const targetData = storyTransition[storyTransition.length - 1];
+        setMainVideoRelationId(targetData.videoRelationId);
+        setMainVideoId(targetData.videoId);
+        changeCurrentFrame(targetData.currentFrame);
+        storyTransition.pop();
+        if(storyTransition.length === 0){
+            setIsStory(false);
+        }
+    }
+    
     return(
         <>
             { isLoadingData
@@ -176,6 +248,7 @@ export const Video = () => {
                         {renderTagElement()}
                         {/* POPUPエリア */}
                         {renderPopup()}
+                        {renderStoryBackImg()}
                     </div>
                     <VideoController
                         isPlay={isPlay}

@@ -11,6 +11,7 @@ from django.db.models import Q
 
 import cv2
 import os.path
+import shutil
 
 class VideoRelationViewSet(viewsets.ModelViewSet):
     """
@@ -24,7 +25,6 @@ class VideoRelationViewSet(viewsets.ModelViewSet):
         """
         プロジェクトIDからVideoRelation取得
         """
-        print(pk)
         videorelation = VideoRelation.objects.filter(project=pk)
         serializers = VideoRelationSerializer(videorelation, many=True)
         return Response(serializers.data)
@@ -96,8 +96,6 @@ class VideoRelationViewSet(viewsets.ModelViewSet):
             # Response用
             serializers = VideoRelationSerializer(videorelation_serializer.instance)
             return Response(serializers.data)
-        else:
-            print(videorelation_serializer.errors)
         
         return Response(videorelation_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -112,6 +110,12 @@ class VideoRelationViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        videorelation = get_object_or_404(VideoRelation, pk=pk)
+        shutil.rmtree('static/videos/{0}/{1}'.format(videorelation.project_id, pk))
+        videorelation.delete()
+        return Response()
 
 class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
@@ -137,8 +141,6 @@ class TagViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         else:
-            print(request.data)
-            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

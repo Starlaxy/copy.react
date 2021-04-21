@@ -7,6 +7,8 @@ from .serializers import *
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 
+import shutil
+
 class ProjectViewSet(viewsets.ModelViewSet):
 
     serializer_class = ProjectSerializer
@@ -20,6 +22,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
             return Response(create_project.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        project = get_object_or_404(Project, pk=pk)
+        shutil.rmtree('static/videos/{0}'.format(pk))
+        project.delete()
+        return Response()
 
     @action(detail=True, methods=['post'])
     def update_title(self, request, pk=None):

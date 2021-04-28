@@ -22,6 +22,7 @@ export const VideoRelationList = () => {
     const { projectId } = useParams();
     const decryptedProjectId = getDecryptedString(projectId)
 
+    
     useEffect(() => {
         getVideoRelation(decryptedProjectId)
         .then(vr => {
@@ -31,23 +32,29 @@ export const VideoRelationList = () => {
         .catch(e => {
             throw new Error(e);
         })
-    },[])
+    }, [decryptedProjectId])
 
     return(
         <>
             {
                 loading ?
                 <div className={classes.loadingLayer}>
-                    <img src={LoadingImg} />
+                    <img src={LoadingImg} alt='LoadingImg' />
                     <p className={classes.loadingText}>Loading...</p>
                 </div>
                 :
                 <>
-                    <h2 className={classes.title}>ビデオ一覧</h2>
-                    <div className={classes.contentWrap}>
-                        {videoRelation.map( vr => <VideoRelationContent key={ vr.id } {...vr} videoRelation={videoRelation} setVideoRelation={ setVideoRelation } /> )}
+                    <div className={classes.videoRelationWrap}>
+                        <h2 className={classes.title}>ビデオ一覧</h2>
+                        <div className={classes.contentWrap}>
+                            {videoRelation.map( vr => <VideoRelationContent key={ vr.id } {...vr} videoRelation={videoRelation} setVideoRelation={ setVideoRelation } /> )}
+                        </div>
                     </div>
-                    <VideoRelationForm projectId={ decryptedProjectId } setVideoRelation={ setVideoRelation } videoRelation={videoRelation} />
+                    <VideoRelationForm
+                        projectId={ decryptedProjectId }
+                        setVideoRelation={ setVideoRelation }
+                        videoRelation={videoRelation}
+                        setLoading={setLoading} />
                 </>
             }
         </>

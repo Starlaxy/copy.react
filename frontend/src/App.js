@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import { Video } from './pages/Video';
 
-function App() {
+const App = () => {
     return (
         <div className="App">
             <Router>

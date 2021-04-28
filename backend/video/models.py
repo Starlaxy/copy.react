@@ -60,7 +60,7 @@ class Tag(models.Model):
     popup_type = models.CharField(max_length=20, default='', blank=True, null=True)
     popup_img = models.FileField(upload_to=get_popup_upload_to, null=True, blank=True)
     popup_text = models.CharField(max_length=100, default='', blank=True, null=True)
-    popup_btn_text = models.CharField(max_length=100, default='', blank=True, null=True)
+    popup_btn_text = models.CharField(max_length=20, default='', blank=True, null=True)
     popup_btn_url = models.URLField(max_length=100, default='', blank=True, null=True)
     left = models.DecimalField(blank=False, null=False, decimal_places=2, max_digits=8, default=0)
     top = models.DecimalField(blank=False, null=False, decimal_places=2, max_digits=8, default=0)

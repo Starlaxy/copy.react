@@ -1,14 +1,10 @@
 import * as THREE from 'three'
-import React, { useState, useEffect, useRef, Suspense } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 
 // import classes from  '../css/VideoPlayer.module.css'
 
 export const ThreeDimVideoPlayer = React.memo(props => {
-
-    const style = {
-        height: '600px'
-    }
 
     const phi = THREE.Math.degToRad( 90 );
     const theta = THREE.Math.degToRad( 0 );
@@ -18,15 +14,35 @@ export const ThreeDimVideoPlayer = React.memo(props => {
         Math.cos( phi ),
         Math.sin( phi ) * Math.sin( theta )
     ]
+
+    const mainVideoFlg = (props.id === props.mainVideoId);
+
+    const pointerEvent = (props.isCreatingTag) ? 'none' : 'auto';
+
+    const style = 
+        (mainVideoFlg)
+            ? {
+                width: '100%',
+                height: '100%',
+            }
+            : {
+                width: '200px',
+                height: '100px',
+                position: 'absolute',
+                bottom: '20px',
+                right: ((props.index - 1) * 200) + 20 + 'px',
+                zIndex: 1,
+                pointerEvents: pointerEvent
+            };
     
     return (
-        <Canvas id="hoge" style={style} camera={{ fov: 75, position: camPosition, near: 1,far: 1200 }} linear={true}>
-            <Suspense fallback={<>...Loading</>}>
+        <>
+            <Canvas style={style} camera={{ fov: 75, position: camPosition, near: 1, far: 1200 }} linear={true}>
                 <Cube {...props} />
-            </Suspense>
-            <axesHelper args={[10]} />
-        </Canvas>
-        )
+                <axesHelper args={[10]} />
+            </Canvas>
+        </>
+    )
 });
 
 const Cube = React.memo(props => {
@@ -55,7 +71,6 @@ const Cube = React.memo(props => {
                 props.setMainVideoId(Number(vid.id));
                 props.setMainVideoEle(vid);
                 props.setIsLoadingVideo(false);
-                props.setTotalFrame(Math.ceil(vid.duration * props.fps));
             }
         })
         vid.addEventListener('ended', () => {
@@ -66,7 +81,7 @@ const Cube = React.memo(props => {
 
     useEffect(() => {
         props.player.push(video);
-    }, []);
+    }, [video]);
 
     /**
      *動画角度変更時マウスダウンイベント
@@ -132,13 +147,13 @@ const Cube = React.memo(props => {
         const adjustmentBottom = Math.min(size.height, Math.max(props.creatingTagState.startY, e.offsetY));
         const width = (adjustmentRight - adjustmentLeft) / size.width * 100;
         const height = (adjustmentBottom - adjustmentTop) / size.height * 100;
-        const left = adjustmentLeft / size.width * 100;
-        const top = adjustmentTop / size.height * 100;
+        const left = (adjustmentLeft + (THREE.Math.degToRad(props.lon) * 500)) / size.width * 100;
+        const top = (adjustmentTop - (THREE.Math.degToRad(props.lat - 90) * 500)) / size.height * 100;
         // 既存のタグ修正時
         if(props.creatingTagState.id !== -1){
             const newVideo = [...props.all_video];
-            newVideo.map(nv => {
-                nv.tags.map(nt => {
+            newVideo.map(nv => (
+                nv.tags.forEach(nt => {
                     if(nt.id === props.creatingTagState.id){
                         // 5桁以下で管理したいため、*100/100
                         nt.width = Math.floor(width * 100) / 100;
@@ -146,8 +161,8 @@ const Cube = React.memo(props => {
                         nt.left = Math.floor(left * 100) / 100;
                         nt.top = Math.floor(top * 100) / 100;
                     }
-                });
-            });
+                })
+            ));
             props.setVideo(newVideo);
         }
         // 新規タグ作成
@@ -173,13 +188,23 @@ const Cube = React.memo(props => {
         e.target.releasePointerCapture(e.pointerId);
     }
 
+    /**
+     *サブ動画クリックイベント(Swiching機能)
+     * @param {VideoElement}
+     */
+    const changeVideo = () => {
+        props.setMainVideoId(props.id);
+        props.setMainVideoEle(video);
+    }
+
     return (
         <mesh
             ref={mesh}
             scale={[1, 1, 1]}
-            onPointerDown={(props.isCreatingTag) ? (e) => createTagPointerDown(e) : (e) => pointerdown(e)}
+            onPointerDown={(props.isCreatingTag) ? (e) => createTagPointerDown(e) : (mainVideoFlg) ? (e) => pointerdown(e) : undefined}
             onPointerMove={(props.canMove) ? (e) => pointerMove(e) : (isPointerDown) ? (e) => createTagPointerMove(e) : undefined}
-            onPointerUp={(props.canMove) ? (e) => pointerUp(e) : (isPointerDown) ? (e) => createTagPointerUp(e) : undefined} >
+            onPointerUp={(props.canMove) ? (e) => pointerUp(e) : (isPointerDown) ? (e) => createTagPointerUp(e) : undefined}
+            onClick={(mainVideoFlg) ? undefined : () => changeVideo()} >
             <sphereBufferGeometry attach="geometry" args={[1000, 30, 30]} />
             <meshBasicMaterial side={THREE.BackSide} >
                 <videoTexture attach="map" args={[video]} />

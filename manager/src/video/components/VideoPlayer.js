@@ -39,7 +39,6 @@ export const VideoPlayer = React.memo(props => {
         target.muted = false;
         props.setMainVideoEle(target);
         props.setIsLoadingVideo(false);
-        props.setTotalFrame(Math.ceil(target.duration * props.fps));
     }
 
     /**
@@ -81,8 +80,8 @@ export const VideoPlayer = React.memo(props => {
         // 既存のタグ修正時
         if(props.creatingTagState.id !== -1){
             const newVideo = [...props.all_video];
-            newVideo.map(nv => {
-                nv.tags.map(nt => {
+            newVideo.forEach(nv => {
+                nv.tags.forEach(nt => {
                     if(nt.id === props.creatingTagState.id){
                         // 5桁以下で管理したいため、*100/100
                         nt.width = Math.floor(width * 100) / 100;
@@ -127,19 +126,18 @@ export const VideoPlayer = React.memo(props => {
     }
 
     return(
-        <>
-            <video muted
-                id={props.id}
-                style={style}
-                ref={ref}
-                onLoadedMetadata={(mainVideoFlg) ? () => loadedMetadata(ref.current) : undefined}
-                onEnded={(mainVideoFlg) ? () => onEnded() : undefined}
-                onPointerDown={(mainVideoFlg && props.isCreatingTag) ? (e) => createTagPointerDown(e) : undefined}
-                onPointerMove={(mainVideoFlg && isPointerDown) ? (e) => createTagPointerMove(e) : undefined}
-                onPointerUp={(mainVideoFlg && isPointerDown) ? (e) => createTagPointerUp(e): undefined}
-                onClick={(!mainVideoFlg) ? () => changeVideo(ref.current) : undefined} >
-                <source src={src} />
-            </video>
-        </>
+        <video muted
+            id={props.id}
+            className={classes.video}
+            style={style}
+            ref={ref}
+            onLoadedMetadata={(mainVideoFlg) ? () => loadedMetadata(ref.current) : undefined}
+            onEnded={(mainVideoFlg) ? () => onEnded() : undefined}
+            onPointerDown={(mainVideoFlg && props.isCreatingTag) ? (e) => createTagPointerDown(e) : undefined}
+            onPointerMove={(mainVideoFlg && isPointerDown) ? (e) => createTagPointerMove(e) : undefined}
+            onPointerUp={(mainVideoFlg && isPointerDown) ? (e) => createTagPointerUp(e): undefined}
+            onClick={(!mainVideoFlg) ? () => changeVideo(ref.current) : undefined} >
+            <source src={src} />
+        </video>
     )
 });

@@ -34,8 +34,8 @@ export const TagElement = (props) => {
                 break;
             case 'story':
                 props.displayStoryLayer(props.tag);
-            default:
-                break;
+            
+            // no default
         }
     }
 

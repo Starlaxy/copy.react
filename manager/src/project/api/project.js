@@ -28,6 +28,7 @@ export const createProject = async (data) =>{
         method: 'POST',
         body: JSON.stringify(data),
     })
+    console.log(res)
     return await toJson(res);
 }
 

@@ -7,7 +7,7 @@ import { Canvas, useThree } from '@react-three/fiber'
 export const ThreeDimVideoPlayer = React.memo(props => {
 
     const style = {
-        height: '600px'
+        height: '100%'
     }
 
     const phi = THREE.Math.degToRad( 90 );

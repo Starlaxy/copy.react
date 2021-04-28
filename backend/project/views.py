@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 
 import shutil
+import os
 
 class ProjectViewSet(viewsets.ModelViewSet):
 
@@ -25,7 +26,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None):
         project = get_object_or_404(Project, pk=pk)
-        shutil.rmtree('static/videos/{0}'.format(pk))
+        if(os.path.isdir('static/videos/{0}'.format(pk))):
+            shutil.rmtree('static/videos/{0}'.format(pk))
         project.delete()
         return Response()
 

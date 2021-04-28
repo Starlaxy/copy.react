@@ -3,16 +3,32 @@ import React, { useState, useEffect } from 'react';
 import PlayIcon from '../../images/video/play_btn.png'
 import StopIcon from '../../images/video/stop_btn.png'
 
+import VolumeOff from '../../images/video/volume_off.png'
+import VolumeSmall from '../../images/video/volume_small.png'
+import VolumeMiddle from '../../images/video/volume_middle.png'
+import VolumeLarge from '../../images/video/volume_large.png'
+
+import FullScreen from '../../images/video/fullscreen.png'
+import ExitFullScreen from '../../images/video/exit_fullscreen.png'
+
 import classes from  '../css/VideoController.module.css'
 
 export const VideoController = (props) => {
 
     const [intervalId, setIntarvalId] = useState(0);
 
-    const [isMouseDown, setIsMouseDown] = useState(false);
+    const [isSeekbarPointerDown, setIsSeekbarPointerDown] = useState(false);
+    const [isVolumebarPointerDown, setIsVolumebarPointerDown] = useState(false);
 
-    const style = {
+    const [volume, setVolume] = useState(100);
+    const [isMuted, setIsMuted] = useState(false);
+
+    const seekBarNowStyle = {
         left: (props.mainVideoEle.currentTime / props.mainVideoEle.duration) * 100 + '%'
+    }
+
+    const volumeBarNowStyle = {
+        left: `calc(${volume}% - 4px)`
     }
 
     // frame上昇
@@ -42,32 +58,105 @@ export const VideoController = (props) => {
     }
 
     /**
-     *seekbarマウスダウン時currentFrame変更
-     * @param {MouseEvent} e
+     *seekbarポインタダウン時currentFrame変更
+     * @param {PointerEvent} e
      */
-    const seekbarMouseDown = (e) => {
-        setIsMouseDown(true);
+    const seekbarPointerDown = (e) => {
+        setIsSeekbarPointerDown(true);
         const frame = props.totalFrame / (e.target.clientWidth / e.nativeEvent.offsetX);
         props.changeCurrentFrame(frame);
         e.target.setPointerCapture(e.pointerId);
     }
 
     /**
-     *seekbarマウスダウン後MouseMoveでcurrentFrame変更
-     * @param {MouseEvent} e
+     *seekbarポインタダウン後PointerMoveでcurrentFrame変更
+     * @param {PointerEvent} e
      */
-    const seekbarMouseMove = (e) => {
+    const seekbarPointerMove = (e) => {
         const adjustmentWidth = Math.max(Math.min(e.target.clientWidth, e.nativeEvent.offsetX), 0);
         const frame = props.totalFrame / (e.target.clientWidth / adjustmentWidth);
         props.changeCurrentFrame(frame);
     }
 
     /**
-     *マウスアップでMouseDown/MouseMoveイベント無効化
+     *ポインタアップでPointerDown/PointerMoveイベント無効化
      */
-    const seekbarMouseUp = (e) => {
-        setIsMouseDown(false);
+    const seekbarPointerUp = (e) => {
+        setIsSeekbarPointerDown(false);
         e.target.releasePointerCapture(e.pointerId);
+    }
+
+    /**
+     *VolumeIconクリック時にmuteを切り替える
+     */
+    const volumeIconClick = () => {
+        setIsMuted(!props.mainVideoEle.muted);
+        props.mainVideoEle.muted = (!props.mainVideoEle.muted);
+    }
+
+    /**
+     *VolumeBarPointerDown時ボリューム変更
+     * @param {PointerEvent} e
+     */
+    const volumebarPointerDown = (e) => {
+        setIsVolumebarPointerDown(true);
+        setVolume(e.nativeEvent.offsetX);
+        props.mainVideoEle.volume = e.nativeEvent.offsetX / 100;
+        e.target.setPointerCapture(e.pointerId);
+        console.log(props.mainVideoEle)
+    }
+
+    /**
+     *Volume変更
+     * @param {PointerEvent} e
+     */
+    const volumebarPointerMove = (e) => {
+        setVolume(Math.max(0, Math.min(100, e.nativeEvent.offsetX)));
+        props.mainVideoEle.volume = Math.max(0, Math.min(100, e.nativeEvent.offsetX)) / 100;
+    }
+
+    /**
+     *PointerDownフラグOFFにし、caputure解放
+     * @param {PointerEvent} e
+     */
+    const volumebarPointerUp = (e) => {
+        setIsVolumebarPointerDown(false);
+        e.target.releasePointerCapture(e.pointerId);
+    }
+
+    /**
+     *Volumeの画像をVolumeの値に応じて描画
+     * @return {JSX} VolumeImg 
+     */
+    const renderVolumeImg = () => {
+        let src;
+        if((volume === 0) || (isMuted)){
+            src = VolumeOff;
+        }
+        else if(volume <= 20){
+            src = VolumeSmall;
+
+        }
+        else if(volume <= 70){
+            src = VolumeMiddle;
+        }
+        else {
+            src = VolumeLarge;
+        }
+        return (
+            <img src={src} className={classes.volumeImg} alt='ボリュームイメージ' onClick={() => volumeIconClick()} />
+        )
+    }
+
+    /**
+     *FullScreenImg切り替え
+     * @return {JSX} img
+     */
+    const renderFullScreenImg = () => {
+        const src = (props.isFullScreen) ? ExitFullScreen : FullScreen
+        return (
+            <img src={src} onClick={(e) => props.handleFullScreen(e)} alt='フルスクリーンアイコン' className={classes.fullScreenImg} />
+        )
     }
 
     /**
@@ -83,24 +172,40 @@ export const VideoController = (props) => {
 
     return(
         <div className={classes.controller}>
-            <img src={props.isPlay ? StopIcon : PlayIcon} alt='再生アイコン' onClick={() => switchPlay()} className={classes.playIcon} />
-            <div 
-                onPointerDown={(e) => seekbarMouseDown(e)}
-                onPointerMove={(isMouseDown) ? (e) => seekbarMouseMove(e) : undefined}
-                onPointerUp={(isMouseDown) ? (e) => seekbarMouseUp(e) : undefined}
-                className={classes.seekbar}>
-                <div className={classes.seekbarTotal}></div>
-                <div className={classes.seekbarNow} style={style} ></div>
+            <div className={classes.timeContloller}>
+                <div className={classes.time}>
+                    <div className={classes.currrentTime}>{secondsToTime(props.mainVideoEle.currentTime)}</div>
+                    <div>/</div>
+                    <div className={classes.duration}>{secondsToTime(props.mainVideoEle.duration)}</div>
+                </div>
+                <div 
+                    onPointerDown={(e) => seekbarPointerDown(e)}
+                    onPointerMove={(isSeekbarPointerDown) ? (e) => seekbarPointerMove(e) : undefined}
+                    onPointerUp={(isSeekbarPointerDown) ? (e) => seekbarPointerUp(e) : undefined}
+                    className={classes.seekbar}>
+                    <div className={classes.seekbarTotal}></div>
+                    <div className={classes.seekbarNow} style={seekBarNowStyle} ></div>
+                </div>
+                <div className={classes.frame}>
+                    <div className={classes.currentFrame}>{Math.ceil(props.currentFrame)}</div>
+                    <div>/</div>
+                    <div className={classes.totalFrame}>{props.totalFrame}</div>
+                </div>
             </div>
-            <div className={classes.time}>
-                <div className={classes.currrentTime}>{secondsToTime(props.mainVideoEle.currentTime)}</div>
-                <div>/</div>
-                <div className={classes.duration}>{secondsToTime(props.mainVideoEle.duration)}</div>
-            </div>
-            <div className={classes.frame}>
-                <div className={classes.currentFrame}>{Math.ceil(props.currentFrame)}</div>
-                <div>/</div>
-                <div className={classes.totalFrame}>{props.totalFrame}</div>
+            <div className={classes.optionController}>
+                <img src={props.isPlay ? StopIcon : PlayIcon} alt='再生アイコン' onClick={() => switchPlay()} className={classes.playIcon} />
+                <div className={classes.volumeController} >
+                    {renderVolumeImg()}
+                    <div
+                        className={classes.volumeBar}
+                        onPointerDown={(e) => volumebarPointerDown(e)}
+                        onPointerMove={(isVolumebarPointerDown) ? (e) => volumebarPointerMove(e) : undefined}
+                        onPointerUp={(isVolumebarPointerDown) ? (e) => volumebarPointerUp(e) : undefined} >
+                        <div className={classes.volumeTotal}></div>
+                        <div className={classes.volumeNow} style={volumeBarNowStyle}></div>
+                    </div>
+                </div>
+                {renderFullScreenImg()}
             </div>
         </div>
     )

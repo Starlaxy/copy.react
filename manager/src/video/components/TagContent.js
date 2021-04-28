@@ -12,20 +12,20 @@ export const TagContent = (props) => {
     const [mount, setMount] = useState(false);
     const transitionStyle = {
         entering: {
-            height: 'auto',
-            transition: 'all 0.5s ease',
+            maxHeight: '100vh',
+            transition: 'all 1s ease',
         },
         entered: {
-            height: 'auto',
-            transition: 'all 0.5s ease',
+            maxHeight: '100vh',
+            transition: 'all 1s ease',
         },
         exiting: {
-            height: 0,
-            transition: 'all 0.5s ease',
+            maxHeight: 0,
+            transition: 'all 1s ease',
         },
         exited: {
-            height: 0,
-            transition: 'all 0.5s ease',
+            maxHeight: 0,
+            transition: 'all 1s ease',
         },
     };
 
@@ -66,8 +66,8 @@ export const TagContent = (props) => {
             case 'link':
                 return (
                     <>
-                        <label htmlFor={"link-rul" + props.id}>URL</label>
-                        <input id={"link-url" + props.id} className={classes.inputText} type='url' name='url' value={ props.url } onChange={ (e) => handleChange(e) } />
+                        <label htmlFor={'link-rul' + props.id} className={classes.inputLabel}>URL</label>
+                        <input id={'link-url' + props.id} className={classes.inputText} type='url' name='url' value={ props.url } onChange={ (e) => handleChange(e) } />
                     </>
                 )
 
@@ -76,32 +76,32 @@ export const TagContent = (props) => {
                     <>
                         <p className={classes.inputColText}>テンプレート選択</p>
                         <div className={classes.radioWrap}>
-                            <label htmlFor={"default" + props.id} className={`${classes.radioLabel} ${(props.popup_type === 'default') ? classes.radioChecked : ''}`}>通常</label>
-                            <input id={"default" + props.id} className={classes.radioInput} type='radio' name='popup_type' value='default' checked={ props.popup_type === 'default' } onChange={ (e) => handleChange(e) } />
-                            <label htmlFor={"vertical" + props.id} className={`${classes.radioLabel} ${(props.popup_type === 'vertical') ? classes.radioChecked : ''}`}>縦</label>
-                            <input id={"vertical" + props.id} className={classes.radioInput} type='radio' name='popup_type' value='vertical' checked={ props.popup_type === 'vertical' } onChange={ (e) => handleChange(e) } />
-                            <label htmlFor={"text" + props.id} className={`${classes.radioLabel} ${(props.popup_type === 'text') ? classes.radioChecked : ''}`}>テキストのみ</label>
-                            <input id={"text" + props.id} className={classes.radioInput} type='radio' name='popup_type' value='text' checked={ props.popup_type === 'text' } onChange={ (e) => handleChange(e) } />
+                            <label htmlFor={'default' + props.id} className={`${classes.radioLabel} ${(props.popup_type === 'default') ? classes.radioChecked : ''}`}>通常</label>
+                            <input id={'default' + props.id} className={classes.radioInput} type='radio' name='popup_type' value='default' checked={ props.popup_type === 'default' } onChange={ (e) => handleChange(e) } />
+                            <label htmlFor={'vertical' + props.id} className={`${classes.radioLabel} ${(props.popup_type === 'vertical') ? classes.radioChecked : ''}`}>縦</label>
+                            <input id={'vertical' + props.id} className={classes.radioInput} type='radio' name='popup_type' value='vertical' checked={ props.popup_type === 'vertical' } onChange={ (e) => handleChange(e) } />
+                            <label htmlFor={'text' + props.id} className={`${classes.radioLabel} ${(props.popup_type === 'text') ? classes.radioChecked : ''}`}>テキストのみ</label>
+                            <input id={'text' + props.id} className={classes.radioInput} type='radio' name='popup_type' value='text' checked={ props.popup_type === 'text' } onChange={ (e) => handleChange(e) } />
                         </div>
                         {renderFileCol()}
-                        <label htmlFor={"popup-text" + props.id}>表示文字</label>
-                        <input id={"popup-text" + props.id} className={classes.inputText} type='text' name='popup_text' value={ props.popup_text } onChange={ (e) => handleChange(e) } />
-                        <label htmlFor={"popup-btn-text" + props.id}>ボタン文字</label>
-                        <input id={"popup-btn-text" + props.id} className={classes.inputText} type='text' name='popup_btn_text' value={ props.popup_btn_text } onChange={ (e) => handleChange(e) } />
-                        <label htmlFor={"popup-url" + props.id}>リンクURL</label>
-                        <input id={"popup-url" + props.id} className={classes.inputText} type='text' name='popup_btn_url' value={ props.popup_btn_url } onChange={ (e) => handleChange(e) } />
+                        <label htmlFor={'popup-text' + props.id} className={classes.inputLabel}>表示文字</label>
+                        <input id={'popup-text' + props.id} className={classes.inputText} type='text' name='popup_text' value={ props.popup_text } onChange={ (e) => handleChange(e) } />
+                        <label htmlFor={'popup-btn-text' + props.id} className={classes.inputLabel}>ボタン文字</label>
+                        <input id={'popup-btn-text' + props.id} className={classes.inputText} type='text' name='popup_btn_text' value={ props.popup_btn_text } onChange={ (e) => handleChange(e) } />
+                        <label htmlFor={'popup-url' + props.id} className={classes.inputLabel}>リンクURL</label>
+                        <input id={'popup-url' + props.id} className={classes.inputText} type='text' name='popup_btn_url' value={ props.popup_btn_url } onChange={ (e) => handleChange(e) } />
                     </>
                 )
             
             default:
                 return (
                     <>
-                        <label htmlFor={"story-next-video" + props.id}>ストーリー先動画</label>
+                        <label htmlFor={'story-next-video' + props.id} className={classes.inputLabel}>ストーリー先動画</label>
                         <select id='story-next-video' value={props.story_next_video} className={classes.storySelect} name='story_next_video' onChange={ (e) => handleChange(e) }>
                             {renderStoryVideoCol()}
                         </select>
-                        <label htmlFor={"story-start-frame" + props.id}>ストーリー開始フレーム</label>
-                        <input name={"story-start-frame" + props.id} type='number' name='story_start_frame' value={ props.story_start_frame } onChange={ (e) => handleChange(e) } />
+                        <label htmlFor={'story-start-frame' + props.id} className={classes.inputLabel}>ストーリー開始フレーム</label>
+                        <input name={'story-start-frame' + props.id} type='number' value={ props.story_start_frame } onChange={ (e) => handleChange(e) } />
                     </>
                 )
         }
@@ -115,8 +115,8 @@ export const TagContent = (props) => {
         if(props.popup_type !== 'text'){
             return (
                 <>
-                    <label htmlFor={"popup-img" + props.id}>ファイル</label>
-                    <input id={"popup-img" + props.id} type='file' name='popup_img' accept='image/*' onChange={ (e) => handleChange(e) } />
+                    <label htmlFor={'popup-img' + props.id} className={classes.inputLabel}>ファイル</label>
+                    <input id={'popup-img' + props.id} type='file' name='popup_img' accept='image/*' onChange={ (e) => handleChange(e) } />
                 </>
             )
         }
@@ -194,26 +194,26 @@ export const TagContent = (props) => {
 
     return(
         <form className={classes.tagForm}>
-            <label htmlFor={"title" + props.id} onClick={() => handleDisplay()}>タイトル</label>
-            <input id={"title" + props.id} className={classes.inputText} type='text' name='title' value={ props.title } onChange={ handleChange } />
+            <label htmlFor={'title' + props.id} onClick={() => handleDisplay()} className={classes.inputLabel}>タイトル</label>
+            <input id={'title' + props.id} className={classes.inputText} type='text' name='title' value={ props.title } onChange={ handleChange } />
             <Transition nodeRef={nodeRef} in={mount} timeout={1000} >
                 {(state) =>
                     <div ref={nodeRef} className={classes.tagCol} style={transitionStyle[state]}>
                         <button className={classes.areaBtn} onClick={(e) => handleClickAreaBtn(e)}>領域指定</button>
                         <p className={classes.inputColText}>タグタイプ</p>
                         <div className={classes.radioWrap}>
-                            <label htmlFor={"link-tag" + props.id} className={`${classes.radioLabel} ${(props.action_type === 'link') ? classes.radioChecked : ''}`}>外部リンク</label>
-                            <input id={"link-tag" + props.id} className={classes.radioInput} type='radio' name='action_type' value='link' checked={ props.action_type === 'link' } onChange={ (e) => handleChange(e) } />
-                            <label htmlFor={"popup-tag" + props.id} className={`${classes.radioLabel} ${(props.action_type === 'popup') ? classes.radioChecked : ''}`}>ポップアップ</label>
-                            <input id={"popup-tag" + props.id} className={classes.radioInput} type='radio' name='action_type' value='popup' checked={ props.action_type === 'popup' } onChange={ (e) => handleChange(e) } />
-                            <label htmlFor={"story-tag" + props.id} className={`${classes.radioLabel} ${(props.action_type === 'story') ? classes.radioChecked : ''}`}>ストーリー</label>
-                            <input id={"story-tag" + props.id} className={classes.radioInput} type='radio' name='action_type' value='story' checked={ props.action_type === 'story' } onChange={ (e) => handleChange(e) } />
+                            <label htmlFor={'link-tag' + props.id} className={`${classes.radioLabel} ${(props.action_type === 'link') ? classes.radioChecked : ''}`}>外部リンク</label>
+                            <input id={'link-tag' + props.id} className={classes.radioInput} type='radio' name='action_type' value='link' checked={ props.action_type === 'link' } onChange={ (e) => handleChange(e) } />
+                            <label htmlFor={'popup-tag' + props.id} className={`${classes.radioLabel} ${(props.action_type === 'popup') ? classes.radioChecked : ''}`}>ポップアップ</label>
+                            <input id={'popup-tag' + props.id} className={classes.radioInput} type='radio' name='action_type' value='popup' checked={ props.action_type === 'popup' } onChange={ (e) => handleChange(e) } />
+                            <label htmlFor={'story-tag' + props.id} className={`${classes.radioLabel} ${(props.action_type === 'story') ? classes.radioChecked : ''}`}>ストーリー</label>
+                            <input id={'story-tag' + props.id} className={classes.radioInput} type='radio' name='action_type' value='story' checked={ props.action_type === 'story' } onChange={ (e) => handleChange(e) } />
                         </div>
                         { renderTagTypeCol() }
-                        <label htmlFor={"display-frame" + props.id}>開始フレーム</label>
-                        <input id={"display-frame" + props.id} className={classes.inputText} type='number' name='display_frame' value={ props.display_frame } onChange={ (e) => handleChange(e) } />
-                        <label htmlFor={"hide-frame" + props.id}>終了フレーム</label>
-                        <input id={"hide-frame" + props.id} className={classes.inputText} type='number' name='hide_frame' value={ props.hide_frame } onChange={ (e) => handleChange(e) } />
+                        <label htmlFor={'display-frame' + props.id} className={classes.inputLabel}>開始フレーム</label>
+                        <input id={'display-frame' + props.id} className={classes.inputText} type='number' name='display_frame' value={ props.display_frame } onChange={ (e) => handleChange(e) } />
+                        <label htmlFor={'hide-frame' + props.id} className={classes.inputLabel}>終了フレーム</label>
+                        <input id={'hide-frame' + props.id} className={classes.inputText} type='number' name='hide_frame' value={ props.hide_frame } onChange={ (e) => handleChange(e) } />
                         <div className={classes.btnWrap}>
                             <button className={classes.deleteBtn} onClick={ (e) => props.showConfirmModal(e, props.id, props.title) }>削除</button>
                             <button className={classes.submitBtn} onClick={ (e) => handleSubmit(e) }>送信</button>

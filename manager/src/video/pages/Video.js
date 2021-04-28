@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 // componentsインポート
 import { VideoPlayer } from '../components/VideoPlayer'
@@ -32,14 +32,18 @@ export const Video = () => {
     const [isLoadingVideo, setIsLoadingVideo] = useState(true);
 
     // video情報 [{}]
-    const [video, setVideo] = useState(initialVideoState);
+    const [video, setVideo] = useState([initialVideoState]);
     // メインで表示しているVideo{}
     const [mainVideoId, setMainVideoId] = useState();
     // <video>要素配列
-    const [player, setPlayer] = useState([]);
+    const [player] = useState([]);
     const [mainVideoEle, setMainVideoEle] = useState(<video></video>);
 
     const [isPlay, setIsPlay] = useState(false);
+
+    // フルスクリーン化する要素（VideoPlayer/VideoController）
+    const fullScreenElm = useRef();
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
     // タグ作成中か？
     const [isCreatingTag, setIsCreatingTag] = useState(false);
@@ -71,6 +75,7 @@ export const Video = () => {
     const [canMove, setCanMove] = useState(false);
     const [lon, setLon] = useState(0);
     const [lat, setLat] = useState(90);
+    const [videoWrapStyle, setVideoWrapStyle] = useState();
 
     // タグ削除時のConfirmModal表示フラグ
     const [isShowConfirmModal, setIsConfirmModal] = useState(false);
@@ -87,7 +92,7 @@ export const Video = () => {
         .catch(e => {
             throw new Error(e);
         })
-    }, []);
+    }, [videoRelationId]);
 
     // Projectの動画一覧取得（story用）
     useEffect(() => {
@@ -98,13 +103,20 @@ export const Video = () => {
         .catch(e => {
             throw new Error(e);
         })
-    }, []);
+    }, [videoRelationId]);
+
+    // totalFrame変更イベント
+    useEffect(() => {
+        if(mainVideoEle.duration){
+            setTotalFrame(Math.ceil(mainVideoEle.duration * fps))
+        }
+    }, [mainVideoEle]);
 
     /**
      *動画再生イベント
      */
     const playVideo = () => {
-        player.map(p => p.play());
+        player.forEach(p => p.play());
         setIsPlay(true);
     }
 
@@ -112,7 +124,7 @@ export const Video = () => {
      *動画停止イベント
      */
     const pauseVideo = () => {
-        player.map(p => p.pause());
+        player.forEach(p => p.pause());
         setIsPlay(false);
     }
 
@@ -123,11 +135,19 @@ export const Video = () => {
     const renderVideo = () => {
         return (
             video.map((v, index) => {
+                if(index === 0 && videoWrapStyle === undefined){
+                    setVideoWrapStyle(
+                        (v.three_dimensional_flg)
+                            ? {width: '100%', height: '100%'}
+                            : {maxWidth: '100%', maxHeight: '100%'}
+                    )
+                }
                 if(v.three_dimensional_flg){
                     return (
                         <ThreeDimVideoPlayer
                             key={v.id}
                             {...v}
+                            index={index}
                             player={player}
                             mainVideoId={mainVideoId}
                             setMainVideoId={setMainVideoId}
@@ -148,7 +168,6 @@ export const Video = () => {
                             setCanMove={setCanMove}
                             setIsLoadingVideo={setIsLoadingVideo}
                             fps={fps}
-                            setTotalFrame={setTotalFrame}
                             setIsPlay={setIsPlay} />
                     )
                 }
@@ -172,8 +191,7 @@ export const Video = () => {
                             setMainVideoId={setMainVideoId}
                             setMainVideoEle={setMainVideoEle}
                             setIsLoadingVideo={setIsLoadingVideo}
-                            fps={fps}
-                            setTotalFrame={setTotalFrame} />
+                            fps={fps} />
                     )
                 }
             })
@@ -353,7 +371,7 @@ export const Video = () => {
      */
     const changeCurrentFrame = (frame) => {
         setCurrentFrame(frame);
-        player.map(p => {
+        player.forEach(p => {
             p.currentTime = frame / 30;
         });
     }
@@ -366,7 +384,7 @@ export const Video = () => {
         deleteTag(deleteTagInfo.id)
         .then(t => {
             let newVideo = [...video];
-            newVideo.map(nv => {
+            newVideo.forEach(nv => {
                 nv.tags = nv.tags.filter(nt => nt.id !== deleteTagInfo.id)
             });
             setVideo(newVideo);
@@ -399,33 +417,69 @@ export const Video = () => {
         setIsConfirmModal(true);
     }
 
+    /**
+     *動画フルスクリーン化
+     */
+    const handleFullScreen = () => {
+        if(!isFullScreen){
+            if (fullScreenElm.current.webkitRequestFullscreen) {
+                fullScreenElm.current.webkitRequestFullscreen(); //Chrome15+, Safari5.1+, Opera15+
+            } else if (fullScreenElm.current.mozRequestFullScreen) {
+                fullScreenElm.current.mozRequestFullScreen(); //FF10+
+            } else if (fullScreenElm.current.msRequestFullscreen) {
+                fullScreenElm.current.msRequestFullscreen(); //IE11+
+            } else if (fullScreenElm.current.requestFullscreen) {
+                fullScreenElm.current.requestFullscreen(); // HTML5 Fullscreen API仕様
+            } else {
+                alert('ご利用のブラウザはフルスクリーン操作に対応していません');
+                return;
+            }
+        }
+        else{
+            if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen(); //Chrome15+, Safari5.1+, Opera15+
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen(); //FF10+
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen(); //IE11+
+            } else if(document.cancelFullScreen) {
+                document.cancelFullScreen(); //Gecko:FullScreenAPI仕様
+            } else if(document.exitFullscreen) {
+                document.exitFullscreen(); // HTML5 Fullscreen API仕様
+            }
+        }
+        setIsFullScreen(!isFullScreen);
+    }
+
     return(
         <>
             { isLoadingData
                 ?
                 <div className={classes.loadingDataLayer}>
-                    <img src={LoadingImg} />
+                    <img src={LoadingImg} alt='LoadingImg' />
                     <p className={classes.loadingText}>Loading...</p>
                 </div>
                 :
                 <>
                     {renderConfirmModal()}
-                    <div className={classes.videoPlayer}>
+                    <div className={classes.videoPlayer} ref={fullScreenElm}>
                         {isLoadingVideo &&
                             <div className={classes.loadingLayer}>
-                                <img src={LoadingImg} />
+                                <img src={LoadingImg} alt='LoadingImg' />
                                 <p className={classes.loadingText}>Loading...</p>
                             </div>
                         }
                         <div className={classes.videoContents}>
-                            {/* video表示 */}
-                            {renderVideo()}
-                            {/* タグ表示 */}
-                            {renderTagElement()}
-                            {/* 新規タグ */}
-                            {renderNewTagEle()}
-                            {/* 領域指定ボタン押下後のレイヤー */}
-                            {renderCreateTagLayer()}
+                            <div className={classes.videoWrap} style={videoWrapStyle}>
+                                {/* video表示 */}
+                                {renderVideo()}
+                                {/* タグ表示 */}
+                                {renderTagElement()}
+                                {/* 新規タグ */}
+                                {renderNewTagEle()}
+                                {/* 領域指定ボタン押下後のレイヤー */}
+                                {renderCreateTagLayer()}
+                            </div>
                             {/* POPUPエリア */}
                             {renderPopup()}
                             {/* StoryLayer */}
@@ -443,19 +497,21 @@ export const Video = () => {
                             mainVideoId={mainVideoId}
                             mainVideoEle={mainVideoEle}
                             fps={fps}
-                            totalFrame={totalFrame} />
+                            totalFrame={totalFrame}
+                            isFullScreen={isFullScreen}
+                            handleFullScreen={handleFullScreen} />
                     </div>
                     {/* タグフォーム */}
                     <div className={classes.tagWrap} >
                         { renderTagContent() }
                         <TagForm
-                            mainVideoId={mainVideoId}
                             video={video}
                             setVideo={setVideo}
                             createTagArea={createTagArea}
                             newTagEleState={newTagEleState}
                             setNewTagEleState={setNewTagEleState}
                             setIsCreatingTag={setIsCreatingTag}
+                            currentFrame={currentFrame}
                             changeCurrentFrame={changeCurrentFrame}
                             storyVideo={storyVideo}
                             mainVideoId={mainVideoId}

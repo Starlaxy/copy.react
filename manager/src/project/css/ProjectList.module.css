@@ -2,11 +2,27 @@
 .h2 {
     font-weight: bold;
     font-size: 150%;
-    padding: 20px 0;
+    margin: 20px;
 }
 
 .projectWrap {
-    margin: 0 20px;
+    height: 100%;
+    overflow-y: scroll;
+    overflow: auto;
+}
+
+/* スクロールバー */
+.projectWrap::-webkit-scrollbar {
+    width: 7px;
+}
+
+.projectWrap::-webkit-scrollbar-thumb {
+    background: #F8B500;
+    border-radius: 3px;
+}
+
+.projectWrap::-webkit-scrollbar-track {
+    background: rgba(100,100,100, .5);
 }
 
 /* ロード画面 */

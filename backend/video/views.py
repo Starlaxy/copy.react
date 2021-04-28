@@ -5,7 +5,6 @@ from rest_framework import status
 from .models import VideoRelation, Video, Tag, EndTag
 from project.models import Project
 from .serializers import *
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
@@ -113,7 +112,8 @@ class VideoRelationViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None):
         videorelation = get_object_or_404(VideoRelation, pk=pk)
-        shutil.rmtree('static/videos/{0}/{1}'.format(videorelation.project_id, pk))
+        if(os.path.isdir('static/videos/{0}/{1}'.format(videorelation.project_id, pk))):
+            shutil.rmtree('static/videos/{0}/{1}'.format(videorelation.project_id, pk))
         videorelation.delete()
         return Response()
 

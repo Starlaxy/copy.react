@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from rest_framework import generics, viewsets
+from .models import VideoRelation, Video, Tag, EndTag
+from .serializers import *
 
-# Create your views here.
+class UserAnalysisViewSet(viewsets.ModelViewSet):
+    """
+    UserAnalysisViewSetクラス
+    """
+    queryset = UserAnalysis.objects.all()
+    serializer_class = UserAnalysisSerializer

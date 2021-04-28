@@ -1,4 +1,4 @@
-export default {
+const config = {
     // バックエンドURL
     API_SERVER: "http://localhost:8000/",
 
@@ -26,3 +26,5 @@ export default {
     // Tag
     API_TAG_NAME: "tag/",
 }
+
+export default config

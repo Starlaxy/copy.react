@@ -1,17 +1,21 @@
 .content {
-    width: 200px;
+    width: 350px;
+    height: auto;
     margin: 10px;
     padding: 5px;
     border: 1px solid;
     border-radius: 10px;
 }
 
-.titleBox {
-    display: flex;
+.titleWrap {
     width: 100%;
     background-color: #CCC;
-    border-radius: 5px 5px 0 0;
     padding: 10px;
+    border-radius: 5px 5px 0 0;
+}
+
+.titleBox {
+    display: flex;
     font-size: 90%;
 }
 
@@ -31,4 +35,26 @@
 
 .thumb {
     width: 100%;
+}
+
+.error {
+    background-color: #F58383;
+    border: 1px solid white;
+}
+
+.errorMessage {
+    display: block;
+    color: #F58383;
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    letter-spacing : 4px;                /* 文字間 */
+    text-shadow    : 
+       1px  1px 1px white,
+      -1px  1px 1px white,
+       1px -1px 1px white,
+      -1px -1px 1px white,
+       1px  0px 1px white,
+       0px  1px 1px white,
+      -1px  0px 1px white,
+       0px -1px 1px white;
 }

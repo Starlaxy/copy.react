@@ -10,7 +10,7 @@
 .deleteImg {
     height: 20px;
     width: 20px;
-    margin: auto 20px 10px auto;
+    margin: auto 50px 10px auto;
     cursor: pointer;
 }
 
@@ -22,8 +22,11 @@
 .project {
     display: flex;
     text-decoration: none;
+    margin: 10px 20px;
+}
+
+.project:nth-of-type(n+2) {
     border-top: 1px solid #b8b8b8;
-    padding: 10px 0;
 }
 
 .title {
@@ -36,4 +39,25 @@
 
 .col {
     margin: 10px;
+}
+
+.error {
+    background-color: #F58383;
+    border: 1px solid white;
+}
+
+.errorMessage {
+    color: #F58383;
+    margin: 10px 0 10px 20px;
+    font-weight: bold;
+    letter-spacing : 4px;                /* 文字間 */
+    text-shadow    : 
+       1px  1px 1px white,
+      -1px  1px 1px white,
+       1px -1px 1px white,
+      -1px -1px 1px white,
+       1px  0px 1px white,
+       0px  1px 1px white,
+      -1px  0px 1px white,
+       0px -1px 1px white;
 }

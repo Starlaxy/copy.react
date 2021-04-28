@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 
-// import classes from  '../css/VideoPlayer.module.css'
+import classes from  '../css/VideoPlayer.module.css'
 
 export const VideoPlayer = React.memo(props => {
 
@@ -45,17 +45,23 @@ export const VideoPlayer = React.memo(props => {
         props.setMainVideoId(Number(target.id));
     }
 
+    /**
+     *動画終了時イベント
+     */
+    const onEnded = () => {
+        props.setIsPlay(false);
+    }
+
     return(
-        <>
-            <video
-                id={props.id}
-                muted
-                ref={ref}
-                style={style}
-                onLoadedMetadata={(mainVideoFlg) ? () => loadedMetadata(ref.current) : undefined}
-                onClick={(!mainVideoFlg) ? () => changeVideo(ref.current) : undefined} >
-                <source src={src} />
-            </video>
-        </>
+        <video
+            id={props.id}
+            muted
+            ref={ref}
+            style={style}
+            onLoadedMetadata={(mainVideoFlg) ? () => loadedMetadata(ref.current) : undefined}
+            onClick={(!mainVideoFlg) ? () => changeVideo(ref.current) : undefined}
+            onEnded={(mainVideoFlg) ? () => onEnded() : undefined} >
+            <source src={src} />
+        </video>
     )
 });

@@ -14,6 +14,7 @@ export const ProjectForm = (props) => {
     }
     
     const [project, setProject] = useState(initialState);
+    const [projectErrors, setProjectErrors] = useState(initialState);
 
     const [mount, setMount] = useState(false);
     const transitionStyle = {
@@ -50,14 +51,85 @@ export const ProjectForm = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        createProject(project)
-        .then(p => {
-            props.setProject([...props.project, p]);
-            setProject(initialState);
-        })
-        .catch(e => {
-            throw new Error(e);
-        });
+        if(Object.values(project).every(v => v !== '')){
+            props.setLoading(true);
+            createProject(project)
+            .then(p => {
+                props.setProject([...props.project, p]);
+                setProject(initialState);
+                props.setLoading(false);
+            })
+            .catch(e => {
+                throw new Error(e);
+            });
+        }
+        else {
+            setProjectErrors({
+                title: titleValidation(project.title),
+                description: descValidation(project.description)
+            })
+        }
+    }
+
+    /**
+     *Blur時入力チェック
+     * @param {input} e
+     */
+    const handleBlur = (e) => {
+        switch(e.target.name){
+            case 'title':
+                setProjectErrors({
+                    ...projectErrors,
+                    'title': titleValidation(e.target.value)
+                });
+                break;
+            case 'description':
+                setProjectErrors({
+                    ...projectErrors,
+                    'description': descValidation(e.target.value)
+                });
+                break;
+
+            // no default
+        }
+    }
+
+    /**
+     *タイトル入力チェック
+     * @param {string} title
+     * @return {string} ErrorMessage 
+     */
+    const titleValidation = (title) => {
+        if(!title){
+            return '入力必須項目です';
+        }
+        else if(100 < title.length){
+            return '100文字以下で入力してください'
+        }
+        return '';
+    }
+
+    /**
+     *詳細入力チェック
+     * @param {string} description
+     * @return {string} ErrorMessage
+     */
+    const descValidation = (description) => {
+        if(!description){
+            return '入力必須項目です';
+        }
+        return '';
+    }
+
+    /**
+     *エラーがあればエラーメッセージ表示
+     * @param {string} message エラーメッセージ
+     * @return {JSX} span
+     */
+    const renderErrorMessage = (message) => {
+        if(message){
+            return <span className={classes.errorMessage}>{message}</span>
+        }
     }
 
     return(
@@ -70,11 +142,25 @@ export const ProjectForm = (props) => {
                     <form className={classes.addForm} style={transitionStyle[state]}>
                         <div className={classes.inputCol}>
                             <label>タイトル</label>
-                            <input type='text' name='title' value={project.title} onChange={handleChange} />
+                            {renderErrorMessage(projectErrors.title)}
+                            <input
+                                type='text'
+                                name='title'
+                                value={project.title}
+                                onChange={handleChange}
+                                onBlur={(e) => handleBlur(e)}
+                                className={`${classes.input} ${(projectErrors.title !== '') ? classes.error : undefined}`} />
                         </div>
                         <div className={classes.inputCol}>
                             <label>詳細</label>
-                            <input type='text' name='description' value={project.description} onChange={handleChange} />
+                            {renderErrorMessage(projectErrors.description)}
+                            <input
+                                type='text'
+                                name='description'
+                                value={project.description}
+                                onChange={handleChange}
+                                onBlur={(e) => handleBlur(e)}
+                                className={`${classes.input} ${(projectErrors.description !== '') ? classes.error : undefined}`} />
                         </div>
                         <div className={classes.submitBtnWrap}>
                             <button onClick={handleSubmit} className={classes.submitBtn}>送信</button>

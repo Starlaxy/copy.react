@@ -28,7 +28,8 @@
     width: 50%;
     height: 100%;
     padding: 10px;
-    text-align: center;
+    display: flex;
+    align-items: center;
 }
 .defaultImgContent > img {
     max-width: 100%;
@@ -53,7 +54,9 @@
 .verticalImgContent {
     width: 100%;
     height: 50%;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .verticalImgContent > img {
     max-width: 100%;

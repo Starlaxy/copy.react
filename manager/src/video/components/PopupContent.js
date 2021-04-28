@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import config from '../../common/components/Environment'
 
+import DummyImg from '../../images/video/dummy_img.png'
 import CloseIcon from '../../images/video/close-icon.png'
 
 import classes from  '../css/PopupContent.module.css'
@@ -10,7 +12,20 @@ export const PopupContent = (props) => {
 
     // popup_img変更時にソースセット
     useEffect(() => {
-        switchImgSrc();
+        // ------------------------------------------------------------------------TODO / 入力チェック
+        if(!props.popup_img) {
+            setImgSrc(DummyImg);
+        }
+        else if(typeof(props.popup_img) == 'object'){
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                setImgSrc(e.target.result)
+            };
+            reader.readAsDataURL(props.popup_img);
+        }
+        else {
+            setImgSrc(config.API_SERVER + props.popup_img);
+        }
     }, [props.popup_img])
 
     /**
@@ -23,7 +38,7 @@ export const PopupContent = (props) => {
                 return (
                     <div className={classes.default}>
                         <div className={classes.defaultImgContent}>
-                            <img src={imgSrc} />
+                            <img src={imgSrc} alt='popup画像' />
                         </div>
                         <div className={classes.defaultTextContent}>
                             <p>{props.popup_text}</p>
@@ -36,7 +51,7 @@ export const PopupContent = (props) => {
                 return (
                     <div className={classes.vertical}>
                         <div className={classes.verticalImgContent}>
-                            <img src={imgSrc} />
+                            <img src={imgSrc} alt='popup画像' />
                         </div>
                         <div className={classes.verticalImgContent}>
                             <p>{props.popup_text}</p>
@@ -52,22 +67,6 @@ export const PopupContent = (props) => {
                         {renderLinkBtn()}
                     </div>
                 )
-        }
-    }
-
-    /**
-     *imgのソースをプレビューか判断する
-     */
-    const switchImgSrc = () => {
-        if(typeof(props.popup_img) == 'object'){
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                setImgSrc(e.target.result)
-            };
-            reader.readAsDataURL(props.popup_img);
-        }
-        else {
-            setImgSrc('http://localhost:8000' + props.popup_img);
         }
     }
 

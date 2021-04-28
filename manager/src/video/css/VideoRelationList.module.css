@@ -1,13 +1,32 @@
+.videoRelationWrap {
+    height: 100%;
+    overflow-y: scroll;
+    overflow: auto;
+}
+
+/* スクロールバー */
+.videoRelationWrap::-webkit-scrollbar {
+    width: 7px;
+}
+
+.videoRelationWrap::-webkit-scrollbar-thumb {
+    background: #F8B500;
+    border-radius: 3px;
+}
+
+.videoRelationWrap::-webkit-scrollbar-track {
+    background: rgba(100,100,100, .5);
+}
+
 .title {
     font-weight: bold;
     font-size: 150%;
-    padding: 20px 0;
-    margin-left: 20px;
+    margin: 20px;
 }
 
 .contentWrap {
-    width: 80%;
     display: flex;
+    flex-wrap: wrap;
 }
 
 /* ロード画面 */

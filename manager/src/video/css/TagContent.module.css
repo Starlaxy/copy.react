@@ -39,6 +39,10 @@
     justify-content: space-between;
 }
 
+.inputLabel {
+    margin: 5px 10px;
+}
+
 .radioInput{
     display: none;
 }

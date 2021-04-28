@@ -28,21 +28,21 @@ export const ProjectList = () => {
         .catch(e => {
             throw new Error(e);
         })
-    },[])
+    }, [])
 
     return(
         <>
             {
                 loading ?
                 <div className={classes.loadingLayer}>
-                    <img src={LoadingImg} />
+                    <img src={LoadingImg} alt='LoadingImg' />
                     <p className={classes.loadingText}>Loading...</p>
                 </div>
                 :
                 <div className={classes.projectWrap}>
                     <h2 className={ classes.h2 }>プロジェクト一覧</h2>
                     {project.map( p => <ProjectContent {...p} setProject={ setProject } project={project} key={p.id} /> )}
-                    <ProjectForm setProject={ setProject } project={project} />
+                    <ProjectForm setProject={ setProject } project={project} setLoading={setLoading} />
                 </div>
             }
         </>

@@ -15,7 +15,7 @@
 .inputText {
     background-color: white;
     color: black;
-    margin: 0 20px;
+    margin: 5px 20px;
     border-radius: 5px;
     padding: 5px;
     font-size: 80%;
@@ -26,10 +26,6 @@
     line-height: 1.4;
     background-color: white;
     color: black;
-}
-
-.storySelectValue {
-    /* color: black; */
 }
 
 .createAreaBtn {
@@ -50,6 +46,10 @@
 
 .radioInput{
     display: none;
+}
+
+.inputLabel {
+    margin: 5px 10px;
 }
 
 .radioLabel {
@@ -84,4 +84,38 @@
 
 .submitBtn:hover {
     background-color: #EDA934;
+}
+
+.setCurrentFrameBtn {
+    margin: 10px 20px 0 auto;
+    background-color: #EEE;
+    padding: 5px;
+    display: inline-block;
+    color: black;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid black;
+    font-size: 80%;
+}
+
+/* エラーメッセージ */
+.error {
+    background-color: #F58383;
+    border: 1px solid white;
+}
+
+.errorMessage {
+    color: #F58383;
+    margin: 5px 0 5px 20px;
+    font-weight: bold;
+    letter-spacing : 4px;
+    text-shadow :
+       1px  1px 1px white,
+      -1px  1px 1px white,
+       1px -1px 1px white,
+      -1px -1px 1px white,
+       1px  0px 1px white,
+       0px  1px 1px white,
+      -1px  0px 1px white,
+       0px -1px 1px white;
 }

@@ -2,17 +2,33 @@
 .tagWrap {
     width: 350px;
     overflow-y: scroll;
+    overflow: auto;
     position: absolute;
     right: 0;
-    top: 6vh;
+    top: 0;
     bottom: 0;
     background-color: #8497B0;
     color: white;
 }
 
+/* スクロールバー */
+.tagWrap::-webkit-scrollbar {
+    width: 7px;
+}
+
+.tagWrap::-webkit-scrollbar-thumb {
+    background: #F8B500;
+    border-radius: 3px;
+}
+
+.tagWrap::-webkit-scrollbar-track {
+    background: rgba(100,100,100, .5);
+}
+
 /* 動画、コントロールバー */
 .videoPlayer {
     width: calc(100% - 350px);
+    height: 100%;
     position: relative;
 }
 
@@ -20,16 +36,12 @@
 .videoContents {
     position: relative;
     overflow: hidden;
-}
-
-/* 2個目移行のVideoを囲む要素 */
-.subVideoWrap {
+    height: calc(100% - 80px);
+    margin: auto 0;
     display: flex;
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-    height: 100px;
-    z-index: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: #4b4e52;
 }
 
 /* タグ作成時レイヤー */
@@ -71,4 +83,13 @@
     font-size: 120%;
     font-weight: bold;
     color: #073B67;
+}
+
+.videoWrap {
+    position: relative;
+}
+
+/* フルスクリーン時のデザイン（デフォルトが黒のため変更） */
+:not(:root):fullscreen::backdrop {
+    background: #F4F6F9;
 }

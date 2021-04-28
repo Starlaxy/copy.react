@@ -25,14 +25,15 @@
 
 .addForm {
     width: 400px;
-    right: -400px;
     height: 100%;
+    padding-top: 10px;
     color: white;
     background-color: #8497B0;
     opacity: 0.9;
     position: fixed;
-    z-index: 1;
     top: 6%;
+    right: -400px;
+    z-index: 1;
 }
 
 .inputCol {
@@ -44,12 +45,33 @@
     margin: 5px 20px;
 }
 
-.inputCol > input {
+.input {
     background-color: white;
     margin: auto 20px;
     padding: 5px;
     border-radius: 5px;
     color: black;
+}
+
+.error {
+    background-color: #F58383;
+    border: 1px solid white;
+}
+
+.errorMessage {
+    color: #F58383;
+    margin: 10px 0 10px 20px;
+    font-weight: bold;
+    letter-spacing : 4px;                /* 文字間 */
+    text-shadow    : 
+       1px  1px 1px white,
+      -1px  1px 1px white,
+       1px -1px 1px white,
+      -1px -1px 1px white,
+       1px  0px 1px white,
+       0px  1px 1px white,
+      -1px  0px 1px white,
+       0px -1px 1px white;
 }
 
 .submitBtnWrap {

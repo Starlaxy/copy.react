@@ -25,14 +25,30 @@
 
 .addForm {
     width: 400px;
-    right: -400px;
     height: calc(100% - 12vh);
     color: white;
     background-color: #8497B0;
     opacity: 0.9;
     position: fixed;
-    z-index: 1;
     top: 6%;
+    right: -400px;
+    overflow: auto;
+    overflow-y: scroll;
+    z-index: 1;
+}
+
+/* スクロールバー */
+.addForm::-webkit-scrollbar {
+    width: 7px;
+}
+
+.addForm::-webkit-scrollbar-thumb {
+    background: #F8B500;
+    border-radius: 3px;
+}
+
+.addForm::-webkit-scrollbar-track {
+    background: rgba(100,100,100, .5);
 }
 
 .inputCol {
@@ -40,11 +56,11 @@
     flex-direction: column;
 }
 
-label {
-    margin: 5px 20px;
+.inputLabel {
+    margin: 10px 20px;
 }
 
-input {
+.inputVideo {
     margin: 5px 20px;
 }
 
@@ -63,6 +79,7 @@ input {
 .submitBtnWrap {
     width: 100%;
     text-align: center;
+    margin-bottom: 20px;
 }
 
 .addBtnWrap {
@@ -71,11 +88,12 @@ input {
 }
 
 .addBtn {
+    display: block;
     padding: 10px;
     background-color: #3f6485;
     font-weight: 500;
     opacity: 0.9;
-    margin-left: 20px;
+    margin: 0 20px 0 auto;
 }
 
 .submitBtn {
@@ -98,4 +116,25 @@ input {
     margin: 0 20px 0 auto;
     padding: 5px 10px;
     border-radius: 5px;
+}
+
+.error {
+    background-color: #F58383;
+    border: 1px solid white;
+}
+
+.errorMessage {
+    color: #F58383;
+    margin: 5px 0 5px 20px;
+    font-weight: bold;
+    letter-spacing : 4px;
+    text-shadow :
+       1px  1px 1px white,
+      -1px  1px 1px white,
+       1px -1px 1px white,
+      -1px -1px 1px white,
+       1px  0px 1px white,
+       0px  1px 1px white,
+      -1px  0px 1px white,
+       0px -1px 1px white;
 }

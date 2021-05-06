@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from video.models import VideoRelation, Video, Tag
+from video.models import Tag, Video, VideoRelation
+
 
 class UserAnalysis(models.Model):
     user_agent = models.CharField(max_length=200)

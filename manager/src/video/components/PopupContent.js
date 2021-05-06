@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import config from '../../common/components/Environment'
+import config from '../../common/components/Environment';
+import CloseIcon from '../../images/video/close-icon.png';
+import DummyImg from '../../images/video/dummy_img.png';
+import classes from '../css/PopupContent.module.css';
 
-import DummyImg from '../../images/video/dummy_img.png'
-import CloseIcon from '../../images/video/close-icon.png'
 
-import classes from  '../css/PopupContent.module.css'
 
 export const PopupContent = (props) => {
 

@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { changeTag } from '../api/tag';
+import React, { useRef, useState } from 'react';
 import { Transition } from 'react-transition-group';
+import { changeTag } from '../api/tag';
+import classes from '../css/TagContent.module.css';
 
-import classes from  '../css/TagContent.module.css'
 
 export const TagContent = (props) => {
 

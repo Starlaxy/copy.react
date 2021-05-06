@@ -4,7 +4,8 @@ html {
 }
 
 body {
-    background-color: #F4F6F9;
+    background:#FFFFFF url(./background.png) no-repeat;
+    background-size: cover;
     color: #555;
     height: 100%;
 }

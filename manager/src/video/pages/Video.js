@@ -75,6 +75,7 @@ export const Video = () => {
     const [canMove, setCanMove] = useState(false);
     const [lon, setLon] = useState(0);
     const [lat, setLat] = useState(90);
+    
     const [videoWrapStyle, setVideoWrapStyle] = useState();
 
     // タグ削除時のConfirmModal表示フラグ
@@ -105,10 +106,23 @@ export const Video = () => {
         })
     }, [videoRelationId]);
 
-    // totalFrame変更イベント
+    // mainVideo変更時
     useEffect(() => {
+        // duration変更
         if(mainVideoEle.duration){
             setTotalFrame(Math.ceil(mainVideoEle.duration * fps))
+        }
+
+        // デザイン変更
+        if(video.find(v => String(v.id) === mainVideoEle.id)){
+            setVideoWrapStyle((video.find(v => String(v.id) === mainVideoEle.id).three_dimensional_flg)
+                ? {
+                    width: '100%', height: '100%'
+                }
+                : {
+                    width: `min(calc(100vw - 350px), calc((100vh - 80px - 12vh) * ${mainVideoEle.videoWidth} / ${mainVideoEle.videoHeight}))`,
+                    height: `min(calc((100vw - 350px) / ${mainVideoEle.videoWidth} * ${mainVideoEle.videoHeight}), calc(100vh - 80px - 12vh))`
+                });
         }
     }, [mainVideoEle]);
 
@@ -135,13 +149,6 @@ export const Video = () => {
     const renderVideo = () => {
         return (
             video.map((v, index) => {
-                if(index === 0 && videoWrapStyle === undefined){
-                    setVideoWrapStyle(
-                        (v.three_dimensional_flg)
-                            ? {width: '100%', height: '100%'}
-                            : {maxWidth: '100%', maxHeight: '100%'}
-                    )
-                }
                 if(v.three_dimensional_flg){
                     return (
                         <ThreeDimVideoPlayer
@@ -168,7 +175,7 @@ export const Video = () => {
                             setCanMove={setCanMove}
                             setIsLoadingVideo={setIsLoadingVideo}
                             fps={fps}
-                            setIsPlay={setIsPlay} />
+                            pauseVideo={pauseVideo} />
                     )
                 }
                 else{
@@ -178,7 +185,6 @@ export const Video = () => {
                             index={index}
                             {...v}
                             player={player}
-                            setIsPlay={setIsPlay}
                             creatingTagState={creatingTagState}
                             setCreatingTagState={setCreatingTagState}
                             setVideo={setVideo}
@@ -189,9 +195,11 @@ export const Video = () => {
                             all_video={video}
                             mainVideoId={mainVideoId}
                             setMainVideoId={setMainVideoId}
+                            mainVideoEle={mainVideoEle}
                             setMainVideoEle={setMainVideoEle}
                             setIsLoadingVideo={setIsLoadingVideo}
-                            fps={fps} />
+                            fps={fps}
+                            pauseVideo={pauseVideo} />
                     )
                 }
             })
@@ -499,7 +507,8 @@ export const Video = () => {
                             fps={fps}
                             totalFrame={totalFrame}
                             isFullScreen={isFullScreen}
-                            handleFullScreen={handleFullScreen} />
+                            handleFullScreen={handleFullScreen}
+                            player={player} />
                     </div>
                     {/* タグフォーム */}
                     <div className={classes.tagWrap} >

@@ -77,9 +77,7 @@ export const Video = () => {
     useEffect(() => {
         const targetVideo = player.find(p=> Number(p.id) === mainVideoId);
         if(targetVideo){
-            player.map(p => p.muted = true);
             setMainVideoEle(targetVideo);
-            targetVideo.muted = false;
         }
     }, [mainVideoId]);
     
@@ -110,7 +108,7 @@ export const Video = () => {
                                         setIsLoadingVideo={setIsLoadingVideo}
                                         fps={fps}
                                         setTotalFrame={setTotalFrame}
-                                        setIsPlay={setIsPlay}
+                                        pauseVideo={pauseVideo}
                                         setMainVideoEle={setMainVideoEle} />
                                 )
                             }
@@ -124,10 +122,11 @@ export const Video = () => {
                                         mainVideoId={mainVideoId}
                                         setMainVideoId={setMainVideoId}
                                         player={player}
+                                        mainVideoEle={mainVideoEle}
                                         setMainVideoEle={setMainVideoEle}
                                         setTotalFrame={setTotalFrame}
                                         fps={fps}
-                                        setIsPlay={setIsPlay} />
+                                        pauseVideo={pauseVideo} />
                                 )
                             }
                         })
@@ -288,6 +287,7 @@ export const Video = () => {
                 <div className={classes.controllLayer} onClick={() => setIsDisplayControll(false)}>
                     <VideoController
                         isPlay={isPlay}
+                        player={player}
                         mainVideoEle={mainVideoEle}
                         currentFrame={currentFrame}
                         setCurrentFrame={setCurrentFrame}

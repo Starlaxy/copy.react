@@ -74,7 +74,7 @@ const Cube = React.memo(props => {
             }
         })
         vid.addEventListener('ended', () => {
-            props.setIsPlay(false);
+            props.pauseVideo();
         })
         return vid;
     })
@@ -193,6 +193,10 @@ const Cube = React.memo(props => {
      * @param {VideoElement}
      */
     const changeVideo = () => {
+        if(!props.mainVideoEle.muted){
+            props.mainVideoEle.muted = true;
+            video.muted = false;
+        }
         props.setMainVideoId(props.id);
         props.setMainVideoEle(video);
     }

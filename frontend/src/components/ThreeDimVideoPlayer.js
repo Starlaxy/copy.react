@@ -26,7 +26,7 @@ export const ThreeDimVideoPlayer = React.memo(props => {
             </Suspense>
             <axesHelper args={[10]} />
         </Canvas>
-        )
+    )
 });
 
 const Cube = React.memo(props => {
@@ -57,7 +57,7 @@ const Cube = React.memo(props => {
             }
         })
         vid.addEventListener('ended', () => {
-            props.setIsPlay(false);
+            props.pauseVideo();
         })
         return vid;
     })

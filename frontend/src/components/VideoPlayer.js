@@ -42,6 +42,10 @@ export const VideoPlayer = React.memo(props => {
      * @param {VideoElement}
      */
     const changeVideo = (target) => {
+        if(!props.mainVideoEle.muted){
+            props.mainVideoEle.muted = true;
+            target.muted = false;
+        }
         props.setMainVideoId(Number(target.id));
     }
 
@@ -49,7 +53,7 @@ export const VideoPlayer = React.memo(props => {
      *動画終了時イベント
      */
     const onEnded = () => {
-        props.setIsPlay(false);
+        props.pauseVideo();
     }
 
     return(

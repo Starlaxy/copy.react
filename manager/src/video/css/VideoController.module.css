@@ -1,6 +1,7 @@
 .controller {
-    height: 70px;
+    height: 80px;
     width: 100%;
+    background: #FFF;
 }
 
 .seekbar {

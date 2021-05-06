@@ -12,7 +12,6 @@ export const PopupContent = (props) => {
 
     // popup_img変更時にソースセット
     useEffect(() => {
-        // ------------------------------------------------------------------------TODO / 入力チェック
         if(!props.popup_img) {
             setImgSrc(DummyImg);
         }

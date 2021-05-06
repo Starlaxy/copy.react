@@ -20,8 +20,7 @@ export const VideoController = (props) => {
     const [isSeekbarPointerDown, setIsSeekbarPointerDown] = useState(false);
     const [isVolumebarPointerDown, setIsVolumebarPointerDown] = useState(false);
 
-    const [volume, setVolume] = useState(100);
-    const [isMuted, setIsMuted] = useState(false);
+    const [volume, setVolume] = useState(props.mainVideoEle.volume * 100);
 
     const seekBarNowStyle = {
         left: (props.mainVideoEle.currentTime / props.mainVideoEle.duration) * 100 + '%'
@@ -44,6 +43,18 @@ export const VideoController = (props) => {
             clearInterval(intervalId);
         }
     }, [props.isPlay]);
+
+    // mainVideoEle変更時にInterval再設定
+    useEffect(() => {
+        clearInterval(intervalId);
+        if(props.isPlay){
+            let id = setInterval(() => {
+                props.setCurrentFrame(props.mainVideoEle.currentTime * props.fps);
+                return () => clearInterval(id);
+            }, props.fps);
+            setIntarvalId(id);
+        }
+    }, [props.mainVideoEle]);
 
     /**
      *再生/停止ボタン押下イベント
@@ -107,7 +118,6 @@ export const VideoController = (props) => {
      */
     const volumeIconClick = (e) => {
         e.stopPropagation();
-        setIsMuted(!props.mainVideoEle.muted);
         props.mainVideoEle.muted = (!props.mainVideoEle.muted);
     }
 
@@ -119,7 +129,7 @@ export const VideoController = (props) => {
         e.stopPropagation();
         setIsVolumebarPointerDown(true);
         setVolume(e.nativeEvent.offsetX);
-        props.mainVideoEle.volume = e.nativeEvent.offsetX / 100;
+        props.player.forEach(p => p.volume = e.nativeEvent.offsetX / 100);
         e.target.setPointerCapture(e.pointerId);
     }
 
@@ -129,7 +139,7 @@ export const VideoController = (props) => {
      */
     const volumebarPointerMove = (e) => {
         setVolume(Math.max(0, Math.min(100, e.nativeEvent.offsetX)));
-        props.mainVideoEle.volume = Math.max(0, Math.min(100, e.nativeEvent.offsetX)) / 100;
+        props.player.forEach(p => p.volume = Math.max(0, Math.min(100, e.nativeEvent.offsetX)) / 100);
     }
 
     /**
@@ -147,7 +157,7 @@ export const VideoController = (props) => {
      */
     const renderVolumeImg = () => {
         let src;
-        if((volume === 0) || (isMuted)){
+        if((volume === 0) || (props.mainVideoEle.muted)){
             src = VolumeOff;
         }
         else if(volume <= 20){

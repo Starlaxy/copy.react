@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
+import { TriangleStripDrawMode } from "three";
 
 import classes from  '../css/VideoPlayer.module.css'
 
@@ -12,9 +13,13 @@ export const VideoPlayer = React.memo(props => {
     const src = 'http://localhost:8000' + props.video;
     const pointerEvent = (props.isCreatingTag) ? 'none' : 'auto';
 
+    const [videoWidth, setVideoWidth] = useState(0);
+    const [videoHeight, setVideoHeight] = useState(0);
+
     const style = (mainVideoFlg)
     ? { 
-        width: '100%' 
+        width: `min(calc(100vw - 350px), calc((100vh - 80px - 12vh) * ${videoWidth} / ${videoHeight}))`,
+        height: `min(calc((100vw - 350px) / ${videoWidth} * ${videoHeight}), calc(100vh - 80px - 12vh))`
     }
     : {
          width: '200px',
@@ -29,6 +34,12 @@ export const VideoPlayer = React.memo(props => {
     useEffect(() => {
         props.player.push(ref.current);
     }, []);
+
+    // メインビデオ変更時、デザイン変更
+    useEffect(() => {
+        setVideoWidth(props.mainVideoEle.videoWidth);
+        setVideoHeight(props.mainVideoEle.videoHeight);
+    }, [props.mainVideoEle])
 
     /**
      *ビデオ読み込み後Durationセット（MAINVIDEOのみ）
@@ -45,7 +56,7 @@ export const VideoPlayer = React.memo(props => {
      *動画終了時イベント
      */
     const onEnded = () => {
-        props.setIsPlay(false);
+        props.pauseVideo();
     }
 
     /**
@@ -121,6 +132,10 @@ export const VideoPlayer = React.memo(props => {
      * @param {VideoElement}
      */
     const changeVideo = (target) => {
+        if(!props.mainVideoEle.muted){
+            props.mainVideoEle.muted = true;
+            target.muted = false;
+        }
         props.setMainVideoId(Number(target.id));
         props.setMainVideoEle(target);
     }

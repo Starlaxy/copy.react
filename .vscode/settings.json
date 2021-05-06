@@ -9,7 +9,7 @@
         "--line-length=119"
     ],
     "[python]": {
-        "editor.codeActionOnSave":{
+        "editor.codeActionsOnSave": {
             "source.organizeImports": true
         }
     }

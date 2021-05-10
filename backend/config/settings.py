@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-
+import psycopg2.extensions
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -96,12 +96,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'copy',
         'USER': 'root',
         'PASSWORD': 'cladmin',
         'ATOMIC_REQUESTS': True,
-    }
+    },
+    'OPTIONS': {
+        'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_SERIALIZABLE,
+    },
 }
 
 

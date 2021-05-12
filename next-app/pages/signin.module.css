@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    padding: 0.75rem;
+    flex-direction: column;
+    max-width: 20%;
+}
+
+
+.container > label{
+    padding: 0.3rem;
+    color: rgba(0,0,0, 0.56);
+    font-weight: 500
+    
+}
+.container > input{
+    border-radius: 0.2rem;
+    border: 1px solid  rgba(0,0,0, 0.56);
+}
+.container > button{
+    margin: 0.3rem 0;
+    background-color: #002C50;
+    color:white;
+    width: 10rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+}
+
+.menu{
+    display:  inline-flex;
+    margin:  1rem;
+    align-items: center;
+    padding: 0.5rem;
+    max-width: full;
+    width: 100%;
+}
+
+.menu > :nth-child(1){
+    margin-right: auto;
+}

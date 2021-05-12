@@ -12,6 +12,11 @@
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
         }
-    }
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",        
+    },
+    "beautify.language": { "js": [] },
+    "prettier.tabWidth": 4,
     
 }
